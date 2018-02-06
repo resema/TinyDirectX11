@@ -1,6 +1,6 @@
 #include "systemclass.h"
 
-int WINAPI WinMain(HINSTANCE hInstane, HINSTANE hPrevInstance, PSTR pScmdline, int iCmdshow)
+int WINAPI WinMain(HINSTANCE hInstane, HINSTANCE hPrevInstance, PSTR pScmdline, int iCmdshow)
 {
 	SystemClass* System;
 	bool result;
@@ -18,7 +18,7 @@ int WINAPI WinMain(HINSTANCE hInstane, HINSTANE hPrevInstance, PSTR pScmdline, i
 
 	// shutdown and release the system objet
 	System->Shutdown();
-	delete Syste;
+	delete System;
 	System = 0;
 
 	return 0;
