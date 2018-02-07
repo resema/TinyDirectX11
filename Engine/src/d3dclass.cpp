@@ -200,11 +200,12 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	// set the feature level to DirectX 11
 	featureLevel = D3D_FEATURE_LEVEL_11_0;
 
-	// create the swap chain, Direct3D device and Direct3D device context
+	//
+	// create the SWAP CHAIN Direct3D DEVICE and Direct3D DEVICE CONTEXT
 	//   use D3D_DRIVER_TYPE_REFERENCE if no compatible videocard available
 	result = D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, 0,
-		&featureLevel, 1, D3D11_SDK_VERSION, &swapChainDesc, &m_swapChain,
-		&m_device, NULL, &m_deviceContext);		
+		&featureLevel, 1, D3D11_SDK_VERSION, &swapChainDesc, 
+		&m_swapChain, &m_device, NULL, &m_deviceContext);		
 	if (FAILED(result))
 	{
 		return false;
@@ -217,7 +218,8 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 		return false;
 	}
 
-	// create the render target view with the backbuffer pointer
+	//
+	// create the RENDER TARGET VIEW with the backbuffer pointer
 	result = m_device->CreateRenderTargetView(backBufferPtr, NULL, &m_renderTargetView);
 	if (FAILED(result))
 	{
@@ -412,5 +414,76 @@ void D3DClass::Shutdown()
 		m_swapChain = 0;
 	}
 
+	return;
+}
+
+void D3DClass::BeginScene(float red, float green, float blue, float alpha)
+{
+	float color[4];
+
+	// set up the color to clear the buffer to
+	color[0] = red;
+	color[1] = green;
+	color[2] = blue;
+	color[3] = alpha;
+
+	// clear the back buffer
+	m_deviceContext->ClearRenderTargetView(m_renderTargetView, color);
+
+	// clear the depth buffer
+	m_deviceContext->ClearDepthStencilView(m_depthStencilView, D3D11_CLEAR_DEPTH, 1.f, 0);
+
+	return;
+}
+
+void D3DClass::EndScene()
+{
+	// present the back buffer to the screen since rendering is complete
+	if (m_vsync_enabled)
+	{
+		// lock the screen refresh rate
+		m_swapChain->Present(1, 0);
+	}
+	else
+	{
+		// present as fast as possible
+		m_swapChain->Present(0, 0);
+	}
+	
+	return;
+}
+
+ID3D11Device* D3DClass::GetDevice()
+{
+	return m_device;
+}
+
+ID3D11DeviceContext* D3DClass::GetDeviceContext()
+{
+	return m_deviceContext;
+}
+
+void D3DClass::GetProjectionMatrix(XMMATRIX& projectionMatrix)
+{
+	projectionMatrix = m_projectionMatrix;
+	return;
+}
+
+void D3DClass::GetWorldMatrix(XMMATRIX& worldMatrix)
+{
+	worldMatrix = m_worldMatrix;
+	return;
+}
+
+void D3DClass::GetOrthoMatrix(XMMATRIX& orthoMatrix)
+{
+	orthoMatrix = m_orthoMatrix;
+	return;
+}
+
+void D3DClass::GetVideoCardInfo(char* cardName, int& memory)
+{
+	strcpy_s(cardName, 128, m_videoCardDescription);
+	memory = m_videoCardMemory;
 	return;
 }
