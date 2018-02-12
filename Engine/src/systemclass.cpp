@@ -177,7 +177,7 @@ void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
 
 	// setup the windows class with default settings
 	wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
-	wc.lpfnWndProc = WndProc;
+	wc.lpfnWndProc = WndProc;		// window procedure
 	wc.cbClsExtra = 0;
 	wc.cbWndExtra = 0;
 	wc.hInstance = m_hinstance;

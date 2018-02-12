@@ -1,5 +1,7 @@
 #include "graphicsclass.h"
 
+#include <string>
+
 GraphicsClass::GraphicsClass()
 {
 	m_Direct3D = 0;
@@ -45,7 +47,20 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		char cardName[128];
 		int cardMem;
 		m_Direct3D->GetVideoCardInfo(cardName, cardMem);
-		
+		int len;
+		int slength = 128;
+		len = MultiByteToWideChar(CP_ACP, 0, cardName, slength, 0, 0);
+		wchar_t* buf = new wchar_t[len];
+		MultiByteToWideChar(CP_ACP, 0, cardName, slength, buf, len);
+		std::wstring wsCardName(buf);
+		delete[] buf;
+
+		int msgboxID = MessageBox(
+			NULL,
+			(LPCWSTR)wsCardName.c_str(),
+			(LPCWSTR)L"Video card name",
+			MB_ICONINFORMATION | MB_OK
+			);
 	}
 
 	return true;
@@ -81,7 +96,7 @@ bool GraphicsClass::Frame()
 bool GraphicsClass::Render()
 {
 	// clear the buffers to begin the scene
-	m_Direct3D->BeginScene(0.5f, 0.5f, 0.5f, 1.f);
+	m_Direct3D->BeginScene(0.8f, 0.4f, 0.6f, 1.f);
 
 	// present the rendered scene to the screen
 	m_Direct3D->EndScene();

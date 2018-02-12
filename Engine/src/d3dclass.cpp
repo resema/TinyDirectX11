@@ -89,7 +89,7 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 		return false;
 	}
 
-	// now go through all teh display modes and find the one that matches
+	// now go through all the display modes and find the one that matches
 	// when a match is found store the num and denom of the refresh rate
 	for (i = 0; i < numModes; i++)
 	{
