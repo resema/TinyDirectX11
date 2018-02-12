@@ -158,6 +158,10 @@
     <ClInclude Include="include\inputclass.h" />
     <ClInclude Include="include\systemclass.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="shader\color.vs.hlsl" />
+    <None Include="shader\color.ps.hlsl" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

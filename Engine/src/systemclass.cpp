@@ -234,8 +234,12 @@ void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
 	SetFocus(m_hwnd);
 
 	// hide the mouse cursor
-	ShowCursor(false);
-
+	if (FULL_SCREEN) {
+		ShowCursor(false);
+	}
+	else {
+		ShowCursor(true);
+	}
 	return;
 }
 

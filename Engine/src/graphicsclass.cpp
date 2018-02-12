@@ -42,7 +42,8 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		MessageBox(hwnd, L"Could not initialize Direct3D", L"Error", MB_OK);
 		return false;
 	}
-	else
+
+	if (VCARD_INFO)
 	{
 		char cardName[128];
 		int cardMem;
@@ -53,6 +54,9 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		wchar_t* buf = new wchar_t[len];
 		MultiByteToWideChar(CP_ACP, 0, cardName, slength, buf, len);
 		std::wstring wsCardName(buf);
+		wsCardName.append(L": ");
+		wsCardName.append(std::to_wstring(cardMem));
+		wsCardName.append(L"Mb");
 		delete[] buf;
 
 		int msgboxID = MessageBox(
@@ -96,7 +100,7 @@ bool GraphicsClass::Frame()
 bool GraphicsClass::Render()
 {
 	// clear the buffers to begin the scene
-	m_Direct3D->BeginScene(0.8f, 0.4f, 0.6f, 1.f);
+	m_Direct3D->BeginScene(1.f, 1.f, 0.f, 1.f);
 
 	// present the rendered scene to the screen
 	m_Direct3D->EndScene();
