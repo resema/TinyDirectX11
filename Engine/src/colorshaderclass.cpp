@@ -2,10 +2,10 @@
 
 ColorShaderClass::ColorShaderClass()
 {
-	m_vertexShader = 0;
-	m_pixelShader = 0;
-	m_layout = 0;
-	m_matrixBuffer = 0;
+	m_vertexShader = nullptr;
+	m_pixelShader = nullptr;
+	m_layout = nullptr;
+	m_matrixBuffer = nullptr;
 }
 
 ColorShaderClass::ColorShaderClass(const ColorShaderClass& other)
@@ -63,7 +63,7 @@ bool ColorShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* 
 	D3D11_BUFFER_DESC matrixBufferDesc;
 
 	// initialize the pointers
-	errorMessage = nullptr;
+ 	errorMessage = nullptr;
 	vertexShaderBuffer = nullptr;
 	pixelShaderBuffer = nullptr;
 
@@ -83,7 +83,7 @@ bool ColorShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* 
 	}
 
 	// compile the PIXEL SHADER code
-	result = D3DCompileFromFile(psFilename, NULL, NULL, "ColorPixelShader", "vs_5_0",
+	result = D3DCompileFromFile(psFilename, NULL, NULL, "ColorPixelShader", "ps_5_0",
 		D3D10_SHADER_ENABLE_STRICTNESS, 0, &pixelShaderBuffer, &errorMessage);
 	if (FAILED(result)) {
 		// if the shader failed to compile it has written something into error message

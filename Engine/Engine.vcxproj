@@ -146,16 +146,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\cameraclass.cpp" />
+    <ClCompile Include="src\colorshaderclass.cpp" />
     <ClCompile Include="src\d3dclass.cpp" />
     <ClCompile Include="src\graphicsclass.cpp" />
     <ClCompile Include="src\inputclass.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\modelclass.cpp" />
     <ClCompile Include="src\systemclass.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\cameraclass.h" />
+    <ClInclude Include="include\colorshaderclass.h" />
     <ClInclude Include="include\d3dclass.h" />
     <ClInclude Include="include\graphicsclass.h" />
     <ClInclude Include="include\inputclass.h" />
+    <ClInclude Include="include\modelclass.h" />
     <ClInclude Include="include\systemclass.h" />
   </ItemGroup>
   <ItemGroup>
