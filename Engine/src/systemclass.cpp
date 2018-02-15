@@ -223,10 +223,18 @@ void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
 	}
 
 	// create the window and get the handle to it
-	m_hwnd = CreateWindowEx(WS_EX_APPWINDOW, m_applicationName, m_applicationName,
-							WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP,
-							posX, posY, screenWidth, screenHeight, NULL, NULL,
-							m_hinstance, NULL);
+	m_hwnd = CreateWindowEx(
+		WS_EX_APPWINDOW, 
+		m_applicationName, 
+		m_applicationName,
+		WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP,
+		posX, posY, 
+		screenWidth, screenHeight, 
+		NULL, 
+		NULL,
+		m_hinstance, 
+		NULL
+		);
 
 	// bring the window up on screen and set it as main focus
 	ShowWindow(m_hwnd, SW_SHOW);
