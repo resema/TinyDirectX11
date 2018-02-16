@@ -35,10 +35,10 @@ private:
 	bool m_vsync_enabled;
 	int m_videoCardMemory;
 	char m_videoCardDescription[128];
-	IDXGISwapChain* m_swapChain;	// COM object
-	ID3D11Device* m_device;
-	ID3D11DeviceContext* m_deviceContext;
-	ID3D11RenderTargetView* m_renderTargetView;
+	IDXGISwapChain* m_swapChain;	// COM interface object
+	ID3D11Device* m_device;					// 1fst part of the hardware device
+	ID3D11DeviceContext* m_deviceContext;	// 2nd part of the HW device
+	ID3D11RenderTargetView* m_renderTargetView;		// actual 2d texture to draw into, passed to the pipeline
 	ID3D11Texture2D* m_depthStencilBuffer;
 	ID3D11DepthStencilState* m_depthStencilState;
 	ID3D11DepthStencilView* m_depthStencilView;

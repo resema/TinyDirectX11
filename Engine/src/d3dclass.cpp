@@ -223,7 +223,11 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	}
 
 	// get the pointer to the BACKBUFFER
-	result = m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&backBufferPtr);
+	result = m_swapChain->GetBuffer(
+		0,							// first buffer
+		__uuidof(ID3D11Texture2D),	// ref ID to the type of interface
+		(LPVOID*)&backBufferPtr		// ptr to buffer
+		);
 	if (FAILED(result))
 	{
 		return false;
@@ -231,7 +235,11 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 
 	//
 	// create the RENDER TARGET VIEW with the backbuffer pointer
-	result = m_device->CreateRenderTargetView(backBufferPtr, NULL, &m_renderTargetView);
+	result = m_device->CreateRenderTargetView(
+		backBufferPtr,			// pResource
+		NULL,					// pDesc
+		&m_renderTargetView		// pRTView
+		);
 	if (FAILED(result))
 	{
 		return false;
@@ -259,7 +267,11 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 
 	//
 	// create the texture for the DEPTH STENCIL BUFFER using the filled out description
-	result = m_device->CreateTexture2D(&depthBufferDesc, NULL, &m_depthStencilBuffer);
+	result = m_device->CreateTexture2D(
+		&depthBufferDesc, 
+		NULL, 
+		&m_depthStencilBuffer
+		);
 	if (FAILED(result))
 	{
 		return false;
@@ -291,14 +303,20 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 
 	//
 	// create the DEPTH STENCIL STATE
-	result = m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilState);
+	result = m_device->CreateDepthStencilState(
+		&depthStencilDesc, 
+		&m_depthStencilState
+		);
 	if (FAILED(result))
 	{
 		return false;
 	}
 
 	// set depth stencil state
-	m_deviceContext->OMSetDepthStencilState(m_depthStencilState, 1);
+	m_deviceContext->OMSetDepthStencilState(
+		m_depthStencilState, 
+		1
+		);
 
 	// initialize the depth stencil view
 	ZeroMemory(&depthStencilViewDesc, sizeof(depthStencilViewDesc));
@@ -310,15 +328,23 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 
 	//
 	// create the DEPTH STENCIL VIEW
-	result = m_device->CreateDepthStencilView(m_depthStencilBuffer, &depthStencilViewDesc, &m_depthStencilView);
+	result = m_device->CreateDepthStencilView(
+		m_depthStencilBuffer, 
+		&depthStencilViewDesc, 
+		&m_depthStencilView
+		);
 	if (FAILED(result))
 	{
 		return false;
 	}
 
 	// BIND the RENDER TARGET VIEW and DEPTH BUFFER to the output render PIPELINE
-	//  Output-Merger stage
-	m_deviceContext->OMSetRenderTargets(1, &m_renderTargetView, m_depthStencilView);
+	//  Output-Merger Stage
+	m_deviceContext->OMSetRenderTargets(
+		1,						// NumViews of render target views
+		&m_renderTargetView,	// ppRendrTargetViews
+		m_depthStencilView		// pDepthStencilView
+		);
 
 	// set up the raster description which will determine how and what polygons will be drawn
 	rasterDesc.AntialiasedLineEnable = false;
@@ -334,7 +360,10 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 
 	//
 	// create the RASTERIZER STATE from the description we just filled out
-	result = m_device->CreateRasterizerState(&rasterDesc, &m_rasterState);
+	result = m_device->CreateRasterizerState(
+		&rasterDesc, 
+		&m_rasterState
+		);
 	if (FAILED(result))
 	{
 		return false;
@@ -359,13 +388,23 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	screenAspect = (float)screenWidth / (float)screenHeight;
 
 	// create the projectio matrix for 3D rendering
-	m_projectionMatrix = XMMatrixPerspectiveFovLH(fieldOfView, screenAspect, screenNear, screenDepth);
+	m_projectionMatrix = XMMatrixPerspectiveFovLH(
+		fieldOfView, 
+		screenAspect, 
+		screenNear, 
+		screenDepth
+		);
 
 	// initialize the world matrix to the identity matrix
 	m_worldMatrix = XMMatrixIdentity();
 
 	// create an orthographic projection matrix for 2D rendering
-	m_orthoMatrix = XMMatrixOrthographicLH((float)screenWidth, (float)screenHeight, screenNear, screenDepth);
+	m_orthoMatrix = XMMatrixOrthographicLH(
+		(float)screenWidth, 
+		(float)screenHeight, 
+		screenNear, 
+		screenDepth
+		);
 
 	return true;
 }
@@ -440,10 +479,18 @@ void D3DClass::BeginScene(float red, float green, float blue, float alpha)
 	color[3] = alpha;
 
 	// clear the back buffer
-	m_deviceContext->ClearRenderTargetView(m_renderTargetView, color);
+	m_deviceContext->ClearRenderTargetView(
+		m_renderTargetView,		// pRenderTargetView
+		color					//ColorRGBA
+		);
 
 	// clear the depth buffer
-	m_deviceContext->ClearDepthStencilView(m_depthStencilView, D3D11_CLEAR_DEPTH, 1.f, 0);
+	m_deviceContext->ClearDepthStencilView(
+		m_depthStencilView, 
+		D3D11_CLEAR_DEPTH, 
+		1.f, 
+		0
+		);
 
 	return;
 }
@@ -454,12 +501,18 @@ void D3DClass::EndScene()
 	if (m_vsync_enabled)
 	{
 		// lock the screen refresh rate
-		m_swapChain->Present(1, 0);
+		m_swapChain->Present(
+			1,		// SyncInterval
+			0		// Flags
+			);
 	}
 	else
 	{
 		// present as fast as possible
-		m_swapChain->Present(0, 0);
+		m_swapChain->Present(
+			0,		// SyncInterval
+			0		// Flags
+			);
 	}
 	
 	return;
