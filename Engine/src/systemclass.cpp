@@ -90,8 +90,8 @@ void SystemClass::Run()
 		// Handle the windows messages
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 		{
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
+			TranslateMessage(&msg);		// translating like keyboard's virtual key to char
+			DispatchMessage(&msg);		// sends message to our procedure WndProcd
 		}
 
 		// if windows signals to end the application then exit out
@@ -225,13 +225,13 @@ void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
 	// create the window and get the handle to it
 	m_hwnd = CreateWindowEx(
 		WS_EX_APPWINDOW, 
-		m_applicationName, 
-		m_applicationName,
+		m_applicationName,									// class name
+		m_applicationName,									// window name
 		WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP,
 		posX, posY, 
 		screenWidth, screenHeight, 
-		NULL, 
-		NULL,
+		NULL,												// handle to parent wnd
+		NULL,												// handle to attached menu
 		m_hinstance, 
 		NULL
 		);

@@ -203,15 +203,26 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	//
 	// create the SWAP CHAIN Direct3D DEVICE and Direct3D DEVICE CONTEXT
 	//   use D3D_DRIVER_TYPE_REFERENCE if no compatible videocard available
-	result = D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, 0,
-		&featureLevel, 1, D3D11_SDK_VERSION, &swapChainDesc, 
-		&m_swapChain, &m_device, NULL, &m_deviceContext);		
+	result = D3D11CreateDeviceAndSwapChain(
+		NULL,						// pAdapter 
+		D3D_DRIVER_TYPE_HARDWARE,	// DriverType
+		NULL,						// Software
+		0,							// Flags
+		&featureLevel,				// pFeatureLevels
+		1,							// FeatureLevels
+		D3D11_SDK_VERSION,			// SDK Version
+		&swapChainDesc,				// pSwapChainDesc
+		&m_swapChain,				// ppSwapChain interface
+		&m_device,					// ppDevice 
+		NULL,						// pFeatureLevel
+		&m_deviceContext			// ppImmediateContext
+		);		
 	if (FAILED(result))
 	{
 		return false;
 	}
 
-	// get the pointer to the backbuffer
+	// get the pointer to the BACKBUFFER
 	result = m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&backBufferPtr);
 	if (FAILED(result))
 	{
@@ -230,10 +241,10 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	backBufferPtr->Release();
 	backBufferPtr = 0;
 
-	// initialize the description of the depth buffer
+	// initialize the description of the DEPTH BUFFER
 	ZeroMemory(&depthBufferDesc, sizeof(depthBufferDesc));
 
-	// set up the description of the depth buffer
+	// set up the description of the DEPTH BUFFER
 	depthBufferDesc.Width = screenWidth;
 	depthBufferDesc.Height = screenHeight;
 	depthBufferDesc.MipLevels = 1;
@@ -305,7 +316,8 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 		return false;
 	}
 
-	// bind the render target view and depth buffer to the output render pipeline
+	// BIND the RENDER TARGET VIEW and DEPTH BUFFER to the output render PIPELINE
+	//  Output-Merger stage
 	m_deviceContext->OMSetRenderTargets(1, &m_renderTargetView, m_depthStencilView);
 
 	// set up the raster description which will determine how and what polygons will be drawn
@@ -328,7 +340,7 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 		return false;
 	}
 
-	// now set the rasterizer state
+	// now set the RASTERIZER STATE
 	m_deviceContext->RSSetState(m_rasterState);
 
 	// set up the viewport for rendering
