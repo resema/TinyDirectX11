@@ -114,7 +114,11 @@ bool ModelClass::InitializeBuffers(ID3D11Device* device)
 	vertexData.SysMemSlicePitch = 0;
 
 	// now create the vertex buffer
-	result = device->CreateBuffer(&vertexBufferDesc, &vertexData, &m_vertexBuffer);
+	result = device->CreateBuffer(
+		&vertexBufferDesc, 
+		&vertexData, 
+		&m_vertexBuffer
+		);
 	if (FAILED(result)) {
 		return false;
 	}
@@ -133,7 +137,11 @@ bool ModelClass::InitializeBuffers(ID3D11Device* device)
 	indexData.SysMemSlicePitch = 0;
 
 	// create the index buffer
-	result = device->CreateBuffer(&indexBufferDesc, &indexData, &m_indexBuffer);
+	result = device->CreateBuffer(
+		&indexBufferDesc, 
+		&indexData, 
+		&m_indexBuffer
+		);
 	if (FAILED(result)) {
 		return false;
 	}
@@ -175,10 +183,20 @@ void ModelClass::RenderBuffers(ID3D11DeviceContext* deviceContext)
 	offset = 0;
 
 	// set vertex buffer to active in the input assembler so it can be rendered
-	deviceContext->IASetVertexBuffers(0, 1, &m_vertexBuffer, &stride, &offset);
+	deviceContext->IASetVertexBuffers(
+		0, 
+		1, 
+		&m_vertexBuffer, 
+		&stride, 
+		&offset
+		);
 
 	// set index buffer to active in the input assembler so it can be rendered
-	deviceContext->IASetIndexBuffer(m_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	deviceContext->IASetIndexBuffer(
+		m_indexBuffer, 
+		DXGI_FORMAT_R32_UINT, 
+		0
+		);
 
 	// set the type of primitive that should be rendered from this vertex buffer, in this case triangles
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
