@@ -115,9 +115,9 @@ bool ModelClass::InitializeBuffers(ID3D11Device* device)
 
 	// now create the vertex buffer
 	result = device->CreateBuffer(
-		&vertexBufferDesc, 
-		&vertexData, 
-		&m_vertexBuffer
+		&vertexBufferDesc,		// ptr to buffer description
+		&vertexData,			// ptr to subresource data structure
+		&m_vertexBuffer			// returned ID3D11 buffer
 		);
 	if (FAILED(result)) {
 		return false;
@@ -138,9 +138,9 @@ bool ModelClass::InitializeBuffers(ID3D11Device* device)
 
 	// create the index buffer
 	result = device->CreateBuffer(
-		&indexBufferDesc, 
-		&indexData, 
-		&m_indexBuffer
+		&indexBufferDesc,		// ptr to buffer description
+		&indexData, 			// ptr to subresource data structure
+		&m_indexBuffer			// returned ID3D11 buffer
 		);
 	if (FAILED(result)) {
 		return false;
@@ -184,11 +184,11 @@ void ModelClass::RenderBuffers(ID3D11DeviceContext* deviceContext)
 
 	// set vertex buffer to active in the input assembler so it can be rendered
 	deviceContext->IASetVertexBuffers(
-		0, 
-		1, 
-		&m_vertexBuffer, 
-		&stride, 
-		&offset
+		0,					// input slot to bind to
+		1,					// number of buffers to bind
+		&m_vertexBuffer,	// ptr to actual vertex buffer
+		&stride,			// size of each vertex
+		&offset				// offset in bytes from the beginning
 		);
 
 	// set index buffer to active in the input assembler so it can be rendered

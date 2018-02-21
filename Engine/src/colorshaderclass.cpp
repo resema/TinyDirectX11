@@ -68,8 +68,17 @@ bool ColorShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* 
 	pixelShaderBuffer = nullptr;
 
 	// compile the VERTEX SHADER code
-	result = D3DCompileFromFile(vsFilename, NULL, NULL, "ColorVertexShader", "vs_5_0", 
-		D3D10_SHADER_ENABLE_STRICTNESS, 0, &vertexShaderBuffer, &errorMessage);
+	result = D3DCompileFromFile(
+		vsFilename,							// filename
+		NULL,								// ptr to array of macros
+		NULL,								// ptr to an include interface
+		"ColorVertexShader",				// name of the shader function
+		"vs_5_0",							// version of the shader
+		D3D10_SHADER_ENABLE_STRICTNESS,		// compile flags
+		0,									// effect flags
+		&vertexShaderBuffer,				// compiled shader
+		&errorMessage						// lists of errors and warnings
+		);
 	if (FAILED(result)) {
 		// if the shader failed to compile it has written something into the error message
 		if (errorMessage) {
@@ -83,8 +92,17 @@ bool ColorShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* 
 	}
 
 	// compile the PIXEL SHADER code
-	result = D3DCompileFromFile(psFilename, NULL, NULL, "ColorPixelShader", "ps_5_0",
-		D3D10_SHADER_ENABLE_STRICTNESS, 0, &pixelShaderBuffer, &errorMessage);
+	result = D3DCompileFromFile(
+		psFilename,							// filename
+		NULL, 								// ptr to array of macros
+		NULL, 								// ptr to an include interface
+		"ColorPixelShader", 				// name of the shader function
+		"ps_5_0",							// version of the shader
+		D3D10_SHADER_ENABLE_STRICTNESS, 	// compile flags
+		0, 									// effect flags
+		&pixelShaderBuffer, 				// compiled shader
+		&errorMessage						// lists of errors and warnings
+		);
 	if (FAILED(result)) {
 		// if the shader failed to compile it has written something into error message
 		if (errorMessage) {
@@ -98,15 +116,23 @@ bool ColorShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* 
 	}
 
 	// create the vertex shader from the buffer
-	result = device->CreateVertexShader(vertexShaderBuffer->GetBufferPointer(),
-		vertexShaderBuffer->GetBufferSize(), NULL, &m_vertexShader);
+	result = device->CreateVertexShader(
+		vertexShaderBuffer->GetBufferPointer(),	// ptr to the start of the shader buffer
+		vertexShaderBuffer->GetBufferSize(),	// size of buffer
+		NULL,									// ptr to a class linkage interface
+		&m_vertexShader							// returned vertex shader
+		);
 	if (FAILED(result)) {
 		return false;
 	}
 
 	// create the pixel shader from the buffer
-	result = device->CreatePixelShader(pixelShaderBuffer->GetBufferPointer(),
-		pixelShaderBuffer->GetBufferSize(), NULL, &m_pixelShader);
+	result = device->CreatePixelShader(
+		pixelShaderBuffer->GetBufferPointer(),	// ptr to the start of the shader buffer
+		pixelShaderBuffer->GetBufferSize(), 	// size of buffer
+		NULL, 									// ptr to a class linkage interface
+		&m_pixelShader							// returned pixel shader
+		);
 	if (FAILED(result)) {
 		return false;
 	}
@@ -133,9 +159,13 @@ bool ColorShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* 
 	numElements = sizeof(polygonLayout) / sizeof(polygonLayout[0]);
 
 	// create the vertex input layout
-	result = device->CreateInputLayout(polygonLayout, numElements, 
-		vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(), 
-		&m_layout);
+	result = device->CreateInputLayout(
+		polygonLayout, 
+		numElements, 
+		vertexShaderBuffer->GetBufferPointer(), 
+		vertexShaderBuffer->GetBufferSize(), 
+		&m_layout
+		);
 	if (FAILED(result)) {
 		return false;
 	}
@@ -157,7 +187,11 @@ bool ColorShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* 
 	
 	// create the constant buffer pointer so we can access the vertex shader constant
 	//  buffer from within the class
-	result = device->CreateBuffer(&matrixBufferDesc, NULL, &m_matrixBuffer);
+	result = device->CreateBuffer(
+		&matrixBufferDesc, 
+		NULL, 
+		&m_matrixBuffer
+		);
 	if (FAILED(result)) {
 		return false;
 	}
@@ -272,8 +306,16 @@ void ColorShaderClass::RenderShader(ID3D11DeviceContext* deviceContext, int inde
 	deviceContext->IASetInputLayout(m_layout);
 
 	// set the vertex and pixel shaders that will be used to render this triangle
-	deviceContext->VSSetShader(m_vertexShader, NULL, 0);
-	deviceContext->PSSetShader(m_pixelShader, NULL, 0);
+	deviceContext->VSSetShader(
+		m_vertexShader,			// vertex shader
+		NULL,					// only used if shader uses interfaces
+		0						// number of class-instances in the array
+		);
+	deviceContext->PSSetShader(
+		m_pixelShader,			// pixel shader
+		NULL, 					// only used if shader uses interfaces
+		0						// number of class-instances in the array
+		);
 
 	// render the triangle
 	deviceContext->DrawIndexed(indexCount, 0, 0);
