@@ -160,11 +160,11 @@ bool ColorShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* 
 
 	// create the vertex input layout
 	result = device->CreateInputLayout(
-		polygonLayout, 
-		numElements, 
-		vertexShaderBuffer->GetBufferPointer(), 
-		vertexShaderBuffer->GetBufferSize(), 
-		&m_layout
+		polygonLayout,							// vertex layout
+		numElements,							// nbr of elements in vertex layout
+		vertexShaderBuffer->GetBufferPointer(), // ptr to the start of vertex shader
+		vertexShaderBuffer->GetBufferSize(),	// size of vertex shader
+		&m_layout								// returned ptr to input layout
 		);
 	if (FAILED(result)) {
 		return false;
@@ -243,7 +243,7 @@ void ColorShaderClass::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND h
 	fout.open("shader-error.txt");
 
 	// write out the error message
-	for (long long i = 0; i < bufferSize; i++) {
+	for (unsigned long long i = 0; i < bufferSize; i++) {
 		fout << compileErrors[i];
 	}
 

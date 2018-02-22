@@ -199,7 +199,11 @@ void ModelClass::RenderBuffers(ID3D11DeviceContext* deviceContext)
 		);
 
 	// set the type of primitive that should be rendered from this vertex buffer, in this case triangles
-	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	deviceContext->IASetPrimitiveTopology(
+		D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST
+		//D3D11_PRIMITIVE_TOPOLOGY_LINELIST
+		//D3D11_PRIMITIVE_TOPOLOGY_POINTLIST
+		);
 
 	return;
 }

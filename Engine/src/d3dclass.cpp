@@ -373,6 +373,7 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	m_deviceContext->RSSetState(m_rasterState);
 
 	// set up the viewport for rendering
+	//  viewport tells the RS what to draw
 	viewport.Width = (float)screenWidth;
 	viewport.Height = (float)screenHeight;
 	viewport.MinDepth = 0.f;
@@ -381,7 +382,10 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	viewport.TopLeftY = 0.f;
 
 	// create the viewport
-	m_deviceContext->RSSetViewports(1, &viewport);
+	m_deviceContext->RSSetViewports(
+		1,			// nbr of viewports
+		&viewport	// ptr to an array of viewports
+		);
 
 	// set up the projection matrix
 	fieldOfView = 3.141592654f / 4.f;
@@ -481,7 +485,7 @@ void D3DClass::BeginScene(float red, float green, float blue, float alpha)
 	// clear the back buffer
 	m_deviceContext->ClearRenderTargetView(
 		m_renderTargetView,		// pRenderTargetView
-		color					//ColorRGBA
+		color					// ColorRGBA
 		);
 
 	// clear the depth buffer
