@@ -177,7 +177,7 @@ bool ColorShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* 
 	pixelShaderBuffer->Release();
 	pixelShaderBuffer = nullptr;
 
-	// setup the description of the dynamic matrix constant buffer that is in the VS
+	// setup the description of the dynamic matrix CONSTANT BUFFER that is in the VS
 	matrixBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
 	matrixBufferDesc.ByteWidth = sizeof(MatrixBufferType);
 	matrixBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
@@ -275,7 +275,13 @@ bool ColorShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 	projectionMatrix = XMMatrixTranspose(projectionMatrix);
 
 	// lock the constant buffer so it can be written to
-	result = deviceContext->Map(m_matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	result = deviceContext->Map(
+		m_matrixBuffer, 
+		0, 
+		D3D11_MAP_WRITE_DISCARD, 
+		0, 
+		&mappedResource
+		);
 	if (FAILED(result)) {
 		return false;
 	}
@@ -289,13 +295,20 @@ bool ColorShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 	dataPtr->projection = projectionMatrix;
 
 	// unlock the constant buffer
-	deviceContext->Unmap(m_matrixBuffer, 0);
+	deviceContext->Unmap(
+		m_matrixBuffer, 
+		0
+		);
 
 	// set the position of the constant buffer in the vertex shader
 	bufferNumber = 0;
 
 	// finally set the constant buffer in the vertex shader with the updated values
-	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_matrixBuffer);
+	deviceContext->VSSetConstantBuffers(
+		bufferNumber, 
+		1, 
+		&m_matrixBuffer
+		);
 
 	return true;
 }
@@ -317,7 +330,7 @@ void ColorShaderClass::RenderShader(ID3D11DeviceContext* deviceContext, int inde
 		0						// number of class-instances in the array
 		);
 
-	// render the triangle
+	// render the triangles
 	deviceContext->DrawIndexed(indexCount, 0, 0);
 
 	return;
