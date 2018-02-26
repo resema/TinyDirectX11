@@ -10,6 +10,7 @@ D3DClass::D3DClass()
 	m_depthStencilState = 0;
 	m_depthStencilView = 0;
 	m_rasterState = 0;
+	m_wireFrame = 0;
 }
 
 D3DClass::D3DClass(const D3DClass& other)
@@ -39,6 +40,7 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
 	D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
 	D3D11_RASTERIZER_DESC rasterDesc;
+	D3D11_RASTERIZER_DESC wireFrameDesc;
 	D3D11_VIEWPORT viewport;
 	float fieldOfView, screenAspect;
 
@@ -347,16 +349,16 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 		);
 
 	// set up the raster description which will determine how and what polygons will be drawn
-	rasterDesc.AntialiasedLineEnable = false;
-	rasterDesc.CullMode = D3D11_CULL_BACK;
-	rasterDesc.DepthBias = 0;
-	rasterDesc.DepthBiasClamp = 0.f;
-	rasterDesc.DepthClipEnable = true;
-	rasterDesc.FillMode = D3D11_FILL_SOLID;
-	rasterDesc.FrontCounterClockwise = false;
-	rasterDesc.MultisampleEnable = false;
-	rasterDesc.ScissorEnable = false;
-	rasterDesc.SlopeScaledDepthBias = 0.f;
+	rasterDesc.FillMode = D3D11_FILL_SOLID;			// Fillmode
+	rasterDesc.CullMode = D3D11_CULL_BACK;			// Culling
+	rasterDesc.FrontCounterClockwise = false;		// Front face orientation
+	rasterDesc.DepthBias = 0;						// depth value offset
+	rasterDesc.DepthBiasClamp = 0.f;				// maximum depth value offset
+	rasterDesc.SlopeScaledDepthBias = 0.f;			// scalare on a given pixel's slope
+	rasterDesc.DepthClipEnable = true;				// clipping based on distance
+	rasterDesc.ScissorEnable = false;				// scissor-rectangle culling
+	rasterDesc.MultisampleEnable = false;			// multisampling antialiasing
+	rasterDesc.AntialiasedLineEnable = false;		// line antialiasing
 
 	//
 	// create the RASTERIZER STATE from the description we just filled out
@@ -369,8 +371,24 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 		return false;
 	}
 
+	// filling the wireframe raster description
+	ZeroMemory(&wireFrameDesc, sizeof(D3D11_RASTERIZER_DESC));
+	wireFrameDesc.FillMode = D3D11_FILL_WIREFRAME;
+	wireFrameDesc.CullMode = D3D11_CULL_NONE;
+	result = m_device->CreateRasterizerState(
+		&wireFrameDesc,
+		&m_wireFrame
+		);
+	if (FAILED(result))
+	{
+		return false;
+	}
+	
+
 	// now set the RASTERIZER STATE
+	//  usually NOT done when initializig the scene
 	m_deviceContext->RSSetState(m_rasterState);
+	//m_deviceContext->RSSetState(m_wireFrame);
 
 	// set up the viewport for rendering
 	//  viewport tells the RS what to draw
@@ -424,49 +442,55 @@ void D3DClass::Shutdown()
 	if (m_rasterState)
 	{
 		m_rasterState->Release();
-		m_rasterState = 0;
+		m_rasterState = nullptr;
+	}
+
+	if (m_wireFrame)
+	{
+		m_wireFrame->Release();
+		m_wireFrame = nullptr;
 	}
 
 	if (m_depthStencilView)
 	{
 		m_depthStencilView->Release();
-		m_depthStencilView = 0;
+		m_depthStencilView = nullptr;
 	}
 
 	if (m_depthStencilState)
 	{
 		m_depthStencilState->Release();
-		m_depthStencilState = 0;
+		m_depthStencilState = nullptr;
 	}
 
 	if (m_depthStencilBuffer)
 	{
 		m_depthStencilBuffer->Release();
-		m_depthStencilBuffer = 0;
+		m_depthStencilBuffer = nullptr;
 	}
 
 	if (m_renderTargetView)
 	{
 		m_renderTargetView->Release();
-		m_renderTargetView = 0;
+		m_renderTargetView = nullptr;
 	}
 
 	if (m_deviceContext)
 	{
 		m_deviceContext->Release();
-		m_deviceContext = 0;
+		m_deviceContext = nullptr;
 	}
 
 	if (m_device)
 	{
 		m_device->Release();
-		m_device = 0;
+		m_device = nullptr;
 	}
 
 	if (m_swapChain)
 	{
 		m_swapChain->Release();
-		m_swapChain = 0;
+		m_swapChain = nullptr;
 	}
 
 	return;
