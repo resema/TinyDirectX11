@@ -8,6 +8,7 @@ GraphicsClass::GraphicsClass()
 	m_Camera = nullptr;
 	m_Model = nullptr;
 	m_ColorShader = nullptr;
+	m_TextureShader = nullptr;
 }
 
 GraphicsClass::GraphicsClass(const GraphicsClass& other)
@@ -62,22 +63,28 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// initialize the model object
-	result = m_Model->Initialize(m_Direct3D->GetDevice());
+	result = m_Model->Initialize(
+		m_Direct3D->GetDevice(), 
+		m_Direct3D->GetDeviceContext(),
+		"../Engine/data/stone01.tga"
+		);
 	if (!result) {
 		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
 		return false;
 	}
-
-	// create the color shader object
-	m_ColorShader = new ColorShaderClass;
-	if (!m_ColorShader) {
+	
+	// create the texture shader object
+	m_TextureShader = new TextureShaderClass;
+	if (!m_TextureShader)
+	{
 		return false;
 	}
 
-	// initialize the color shader object
-	result = m_ColorShader->Initialize(m_Direct3D->GetDevice(), hwnd);
-	if (!result) {
-		MessageBox(hwnd, L"Could not initialize the color shader object.", L"Error", MB_OK);
+	// initialize the texture shader object
+	result = m_TextureShader->Initialize(m_Direct3D->GetDevice(), hwnd);
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the texture shader object.", L"Error", MB_OK);
 		return false;
 	}
 
@@ -110,11 +117,11 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 
 void GraphicsClass::Shutdown()
 {
-	// release the color shader object
-	if (m_ColorShader) {
-		m_ColorShader->Shutdown();
-		delete m_ColorShader;
-		m_ColorShader = nullptr;
+	// release the texture shader object
+	if (m_TextureShader) {
+		m_TextureShader->Shutdown();
+		delete m_TextureShader;
+		m_TextureShader = nullptr;
 	}
 
 	// release the model object
@@ -174,9 +181,13 @@ bool GraphicsClass::Render()
 	// put model vertex and index buffers on the graphics pipeline to prepare them for drawing
 	m_Model->Render(m_Direct3D->GetDeviceContext());
 
-	// render the model using the color shader
-	result = m_ColorShader->Render(m_Direct3D->GetDeviceContext(), m_Model->GetIndexCount(),
-		worldMatrix, viewMatrix, projectionMatrix);
+	// render the model using the texture shader
+	result = m_TextureShader->Render(
+		m_Direct3D->GetDeviceContext(), 
+		m_Model->GetIndexCount(),
+		worldMatrix, viewMatrix, projectionMatrix,
+		m_Model->GetTexture()
+		);
 	if (!result) {
 		return false;
 	}

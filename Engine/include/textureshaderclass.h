@@ -1,5 +1,5 @@
-#ifndef COLORSHADERCLASS_H
-#define COLORSHADERCLASS_H
+#ifndef TEXTURESHADERCLASS_H
+#define TEXTURESHADERCLASS_H
 
 #include <d3d11.h>
 #include <d3dcompiler.h>
@@ -44,4 +44,4 @@ private:
 	ID3D11SamplerState* m_sampleState;
 };
 
-#endif	// COLORSHADERCLASS_H
+#endif	// TEXTURESHADERCLASS_H

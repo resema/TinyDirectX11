@@ -96,3 +96,132 @@ bool TextureClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceC
 
 	return true;
 }
+
+void TextureClass::Shutdown()
+{
+	// release the texture view resource
+	if (m_textureView)
+	{
+		m_textureView->Release();
+		m_textureView = nullptr;
+	}
+
+	// release the texture
+	if (m_texture)
+	{
+		m_texture->Release();
+		m_texture = nullptr;
+	}
+
+	// release the targa data
+	if (m_targaData)
+	{
+		delete[] m_targaData;
+		m_targaData = nullptr;
+	}
+
+	return;
+}
+
+ID3D11ShaderResourceView* TextureClass::GetTexture()
+{
+	return m_textureView;
+}
+
+bool TextureClass::LoadTarga(char* filename, int& height, int& width)
+{
+	int error, bpp, imageSize, index, i, j, k;
+	FILE* filePtr;
+	unsigned int count;
+	TargaHeader targaFileHeader;
+	unsigned char* targaImage;
+
+	// Open the targa file for reading in binary
+	error = fopen_s(&filePtr, filename, "rb");
+	if (error != 0)
+	{
+		return false;
+	}
+
+	// read in the file header
+	count = (unsigned int)fread(&targaFileHeader, sizeof(TargaHeader), 1, filePtr);
+	if (count != 1)
+	{
+		return false;
+	}
+
+	// get the important information from the header
+	height = (int)targaFileHeader.height;
+	width = (int)targaFileHeader.width;
+	bpp = (int)targaFileHeader.bpp;
+
+	// check that it is 32bit and not 24bit
+	if (bpp != 32)
+	{
+		return false;
+	}
+
+	// calculate the size of the 32 bit image data
+	imageSize = width * height * 4;
+
+	// allocate memory for the targa image data
+	targaImage = new unsigned char[imageSize];
+	if (!targaImage)
+	{
+		return false;
+	}
+
+	// read in the targa image data
+	count = (unsigned int)fread(targaImage, 1, imageSize, filePtr);
+	if (count != imageSize)
+	{
+		return false;
+	}
+
+	// close the file
+	error = fclose(filePtr);
+	if (error != 0)
+	{
+		return false;
+	}
+
+	// allocate memory for the targa destination data
+	m_targaData = new unsigned char[imageSize];
+	if (!m_targaData)
+	{
+		return false;
+	}
+
+	// initialize the index into the targa destination data array
+	index = 0;
+
+	// initialize the index into the targa image data
+	k = (width * height * 4) - (width * 4);
+
+	// now copy the targa image data into the targa destination array in the correct order
+	//  since the targa format is stored upside down
+	for (j = 0; j < height; j++)
+	{
+		for (i = 0; i < width; i++)
+		{
+			m_targaData[index + 0] = targaImage[k + 2]; // Red
+			m_targaData[index + 1] = targaImage[k + 1]; // Green
+			m_targaData[index + 2] = targaImage[k + 0]; // Blue
+			m_targaData[index + 3] = targaImage[k + 3]; // Alpha
+
+			// increment the indexes into the targa data
+			k += 4;
+			index += 4;
+		}
+
+		// set the targa image index back to the PRECEDING ROW at the beginning of the
+		//  column since its reading it in upside down
+		k -= (width * 8);
+	}
+
+	// release the targa image data now that it was copied into the dest array
+	delete[] targaImage;
+	targaImage = nullptr;
+
+	return true;
+}

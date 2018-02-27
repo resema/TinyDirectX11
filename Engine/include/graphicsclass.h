@@ -5,6 +5,7 @@
 #include "cameraclass.h"
 #include "modelclass.h"
 #include "colorshaderclass.h"
+#include "textureshaderclass.h"
 
 const bool VCARD_INFO = false;
 const bool FULL_SCREEN = false;
@@ -18,6 +19,10 @@ public:
 	GraphicsClass();
 	GraphicsClass(const GraphicsClass&);
 	~GraphicsClass();
+	// rule of five
+	GraphicsClass& operator=(const GraphicsClass&) = default;
+	GraphicsClass(GraphicsClass&&) = default;
+	GraphicsClass& operator=(GraphicsClass&&) = default;
 
 	bool Initialize(int, int, HWND);
 	void Shutdown();
@@ -29,6 +34,7 @@ private:
 	CameraClass* m_Camera;
 	ModelClass* m_Model;
 	ColorShaderClass* m_ColorShader;
+	TextureShaderClass* m_TextureShader;
 };
 
 #endif	// GRAPHICSCLASS_H
