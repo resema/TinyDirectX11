@@ -66,7 +66,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	result = m_Model->Initialize(
 		m_Direct3D->GetDevice(), 
 		m_Direct3D->GetDeviceContext(),
-		"../Engine/data/stone01.tga"
+		"./data/stone01.tga"
 		);
 	if (!result) {
 		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
