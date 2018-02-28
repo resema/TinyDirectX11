@@ -213,20 +213,20 @@ bool TextureShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR
 		return false;
 	}
 
-	// crate a texture sampler state description
-	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.MipLODBias = 0.f;
-	samplerDesc.MaxAnisotropy = 1;
-	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
-	samplerDesc.BorderColor[0] = 0;
+	// create a texture sampler state description
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;	// filter method
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;		// behavior if U is larger than 1 or less than 0
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;		// behavior if V is larger than 1 or less than 0
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;		// behavior if W is larger than 1 or less than 0
+	samplerDesc.MipLODBias = 0.f;							// offset from calculated mipmap level
+	samplerDesc.MaxAnisotropy = 1;							// filter	
+	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;	// compare mipmap data with another mipmaps sampled data for this texture
+	samplerDesc.BorderColor[0] = 0;							
 	samplerDesc.BorderColor[1] = 0;
 	samplerDesc.BorderColor[2] = 0;
 	samplerDesc.BorderColor[3] = 0;
-	samplerDesc.MinLOD = 0;
-	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+	samplerDesc.MinLOD = 0;									// lowest mipmap level (0=most detailed and largest)
+	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;					// largest mipmap level (0=most detailed and largest)
 
 	// create the texture sampler state
 	result = device->CreateSamplerState(
@@ -387,7 +387,7 @@ void TextureShaderClass::RenderShader(ID3D11DeviceContext* deviceContext, int in
 		0						// number of class-instances in the array
 		);
 
-	// set the samler state in the pixel shader
+	// set the sampler state in the pixel shader
 	deviceContext->PSSetSamplers(
 		0,				// start slot
 		1,				// number of samplers
