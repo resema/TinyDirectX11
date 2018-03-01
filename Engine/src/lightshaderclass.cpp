@@ -39,3 +39,27 @@ void LightShaderClass::Shutdown() {
 
 	return;
 }
+
+bool LightShaderClass::Render(ID3D11DeviceContext* deviceContext, int indexCount,
+	XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix,
+	ID3D11ShaderResourceView* texture, XMFLOAT3 lightDirection, XMVECTOR diffuseColor)
+{
+	bool result;
+
+	// set the shader parameters that it will use for rendering
+	result = SetShaderParameters(
+		deviceContext,
+		worldMatrix, viewMatrix, projectionMatrix,
+		texture,
+		lightDirection, diffuseColor
+		);
+	if (!result) 
+	{
+		return false;
+	}
+
+	// now render the prepared buffers with the shader
+	RenderShader(deviceContext, indexCount);
+
+	return true;
+}
