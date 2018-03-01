@@ -173,10 +173,20 @@
     <None Include="shader\color.ps.hlsl" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="shader\texture.ps.hlsl">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </FxCompile>
+    <None Include="shader\texture.ps.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </ExcludedFromBuild>
+      <FileType>Document</FileType>
+    </None>
     <None Include="shader\texture.vs.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shader\light.ps.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="shader\light.vs.hlsl">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>
