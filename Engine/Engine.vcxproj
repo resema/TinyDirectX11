@@ -151,6 +151,7 @@
     <ClCompile Include="src\d3dclass.cpp" />
     <ClCompile Include="src\graphicsclass.cpp" />
     <ClCompile Include="src\inputclass.cpp" />
+    <ClCompile Include="src\lightshaderclass.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\modelclass.cpp" />
     <ClCompile Include="src\systemclass.cpp" />
@@ -163,6 +164,7 @@
     <ClInclude Include="include\d3dclass.h" />
     <ClInclude Include="include\graphicsclass.h" />
     <ClInclude Include="include\inputclass.h" />
+    <ClInclude Include="include\lightshaderclass.h" />
     <ClInclude Include="include\modelclass.h" />
     <ClInclude Include="include\systemclass.h" />
     <ClInclude Include="include\textureclass.h" />
