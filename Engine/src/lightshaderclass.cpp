@@ -207,4 +207,70 @@ bool LightShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd,
 
 	pixelShaderBuffer->Release();
 	pixelShaderBuffer = nullptr;
+
+	// create a texture sampler state description
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.MipLODBias = 0.f;
+	samplerDesc.MaxAnisotropy = 1;
+	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+	samplerDesc.BorderColor[0] = 0;
+	samplerDesc.BorderColor[1] = 0;
+	samplerDesc.BorderColor[2] = 0;
+	samplerDesc.BorderColor[3] = 0;
+	samplerDesc.MinLOD = 0;
+	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+	// create the texture sampler state
+	result = device->CreateSamplerState(
+		&samplerDesc,
+		&m_samplerState
+		);
+	if (FAILED(result))
+	{
+		return false;
+	}
+
+	// setup the description of the dynamic matrix constant buffer
+	matrixBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	matrixBufferDesc.ByteWidth = sizeof(MatrixBufferType);
+	matrixBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	matrixBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	matrixBufferDesc.MiscFlags = 0;
+	matrixBufferDesc.StructureByteStride = 0;
+
+	// create the ocnstant buffer ptr to access the vertex shader constant buffer
+	result = device->CreateBuffer(
+		&matrixBufferDesc,
+		NULL,
+		&m_matrixBuffer
+		);
+	if (FAILED(result))
+	{
+		return false;
+	}
+
+	// setup the desc of the light dynamic constant buffer
+	//  note that Bytewidth always to be a multiple of 16
+	lightBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	lightBufferDesc.ByteWidth = sizeof(LightBufferType);
+	lightBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	lightBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	lightBufferDesc.MiscFlags = 0;
+	lightBufferDesc.StructureByteStride = 0;
+
+	// create the constant buffer ptr to acces the vertex shader constant buffer
+	result = device->CreateBuffer(
+		&lightBufferDesc,
+		NULL,
+		&m_lightBuffer
+		);
+	if (FAILED(result))
+	{
+		return false;
+	}
+
+	return true;
 }
