@@ -274,3 +274,51 @@ bool LightShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd,
 
 	return true;
 }
+
+void LightShaderClass::ShutdownShader()
+{
+	// release the light constant buffer
+	if (m_lightBuffer)
+	{
+		m_lightBuffer->Release();
+		m_lightBuffer = nullptr;
+	}
+
+	// release the matrix constant buffer
+	if (m_matrixBuffer)
+	{
+		m_matrixBuffer->Release();
+		m_matrixBuffer = nullptr;
+	}
+
+	// release the sampler state
+	if (m_samplerState)
+	{
+		m_samplerState->Release();
+		m_samplerState = nullptr;
+	}
+
+	// release the layout
+	if (m_layout)
+	{
+		m_layout->Release();
+		m_layout = nullptr;
+	}
+
+	// release the pixel shader
+	if (m_pixelShader)
+	{
+		m_pixelShader->Release();
+		m_pixelShader = nullptr;
+	}
+
+	// release the vertex shader
+	if (m_vertexShader)
+	{
+		m_vertexShader->Release();
+		m_vertexShader = nullptr;
+	}
+
+	return;
+}
+
