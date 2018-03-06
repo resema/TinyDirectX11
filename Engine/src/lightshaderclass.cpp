@@ -163,7 +163,7 @@ bool LightShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd,
 	// this setup needs to match the vertextype structure in the ModelClass and shader
 	polygonLayout[0].SemanticName = "POSITION";
 	polygonLayout[0].SemanticIndex = 0;
-	polygonLayout[0].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	polygonLayout[0].Format = DXGI_FORMAT_R32G32B32_FLOAT;
 	polygonLayout[0].InputSlot = 0;
 	polygonLayout[0].AlignedByteOffset = 0;
 	polygonLayout[0].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
@@ -412,6 +412,7 @@ bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 		&texture
 		);
 
+	//
 	// lock the light constant buffers so it can be written to
 	result = deviceContext->Map(
 		m_lightBuffer,
@@ -425,4 +426,53 @@ bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 		return false;
 	}
 
+	// get a ptr to the data in the constant buffer
+	dataPtr2 = (LightBufferType*)mappedResource.pData;
+
+	// copy the light variables into the constant buffer
+	dataPtr2->diffuseColor = diffuseColor;
+	dataPtr2->lightDirection = lightDirection;
+	dataPtr2->padding = 0.f;
+
+	// unlock the constant buffer
+	deviceContext->Unmap(
+		m_lightBuffer,
+		0
+		);
+
+	// set the position of the light constants buffer in the pixel shader
+	bufferNumber = 0;
+
+	// finally set the light constant buffer in the pixel shader with the updated values
+	deviceContext->PSSetConstantBuffers(
+		bufferNumber,
+		1,
+		&m_lightBuffer
+		);
+
+	return true;
+}
+
+void LightShaderClass::RenderShader(ID3D11DeviceContext* deviceContext, int indexCount)
+{
+	// set the vertex input layout
+	deviceContext->IASetInputLayout(m_layout);
+
+	// set the vertex and pixel shaders
+	deviceContext->VSSetShader(m_vertexShader, NULL, 0);
+	deviceContext->PSSetShader(m_pixelShader, NULL, 0);
+
+	// set the sampler state in the pixel shader
+	deviceContext->PSSetSamplers(
+		0,
+		1,
+		&m_samplerState
+		);
+
+	// render the triangle
+	deviceContext->DrawIndexed(
+		indexCount,
+		0,
+		0
+		);
 }

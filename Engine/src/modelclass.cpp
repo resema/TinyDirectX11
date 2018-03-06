@@ -95,15 +95,19 @@ bool ModelClass::InitializeBuffers(ID3D11Device* device)
 	// load the vertex array data
 	vertices[0].position = XMFLOAT3(-1.f, -1.f, 0.f);	// bottom left
 	vertices[0].texture = XMFLOAT2(0.f, 1.f);
+	vertices[0].normal = XMFLOAT3(0.f, 0.f, -1.f);
 	
 	vertices[1].position = XMFLOAT3(-1.f, 1.f, 0.f);	// top left
 	vertices[1].texture = XMFLOAT2(0.f, 0.f);
+	vertices[1].normal = XMFLOAT3(0.f, 0.f, -1.f);
 
 	vertices[2].position = XMFLOAT3(1.f, 1.f, 0.f);		// top right 
 	vertices[2].texture = XMFLOAT2(1.f, 0.f);
+	vertices[2].normal = XMFLOAT3(0.f, 0.f, -1.f);
 
 	vertices[3].position = XMFLOAT3(1.f, -1.f, 0.f);	// bottom right
 	vertices[3].texture = XMFLOAT2(1.f, 1.f);
+	vertices[3].normal = XMFLOAT3(0.f, 0.f, -1.f);
 
 	// load the index array with data
 	indices[0] = 0;

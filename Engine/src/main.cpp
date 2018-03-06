@@ -7,7 +7,10 @@ int WINAPI WinMain(HINSTANCE hInstane, HINSTANCE hPrevInstance, PSTR pScmdline, 
 
 	// Create the system object
 	System = new SystemClass;
-	if (!System) return 0;
+	if (!System)
+	{
+		return 0;
+	}
 
 	// initialze and run the system oject
 	result = System->Initialize();
@@ -19,7 +22,7 @@ int WINAPI WinMain(HINSTANCE hInstane, HINSTANCE hPrevInstance, PSTR pScmdline, 
 	// shutdown and release the system objet
 	System->Shutdown();
 	delete System;
-	System = 0;
+	System = nullptr;
 
 	return 0;
 }

@@ -7,8 +7,11 @@ GraphicsClass::GraphicsClass()
 	m_Direct3D = nullptr;
 	m_Camera = nullptr;
 	m_Model = nullptr;
-	m_ColorShader = nullptr;
-	m_TextureShader = nullptr;
+
+	//m_ColorShader = nullptr;
+	//m_TextureShader = nullptr;
+	m_LightShader = nullptr;
+	m_Light = nullptr;
 }
 
 GraphicsClass::GraphicsClass(const GraphicsClass& other)
@@ -49,16 +52,18 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 
 	// create the camera object
 	m_Camera = new CameraClass;
-	if (!m_Camera) {
+	if (!m_Camera) 
+	{
 		return false;
 	}
 
 	// set the initial position of the camera
-	m_Camera->SetPosition(1.f, 1.f, -5.f);
+	m_Camera->SetPosition(0.f, 0.f, -5.f);
 
 	// create the model object
 	m_Model = new ModelClass;
-	if (!m_Model) {
+	if (!m_Model) 
+	{
 		return false;
 	}
 
@@ -68,25 +73,52 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		m_Direct3D->GetDeviceContext(),
 		"./data/stone01.tga"
 		);
-	if (!result) {
+	if (!result) 
+	{
 		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
 		return false;
 	}
 	
-	// create the texture shader object
-	m_TextureShader = new TextureShaderClass;
-	if (!m_TextureShader)
+	//// create the texture shader object
+	//m_TextureShader = new TextureShaderClass;
+	//if (!m_TextureShader)
+	//{
+	//	return false;
+	//}
+
+	//// initialize the texture shader object
+	//result = m_TextureShader->Initialize(m_Direct3D->GetDevice(), hwnd);
+	//if (!result)
+	//{
+	//	MessageBox(hwnd, L"Could not initialize the texture shader object.", L"Error", MB_OK);
+	//	return false;
+	//}
+
+	// create the light shader object
+	m_LightShader = new LightShaderClass;
+	if (!m_LightShader)
 	{
 		return false;
 	}
 
-	// initialize the texture shader object
-	result = m_TextureShader->Initialize(m_Direct3D->GetDevice(), hwnd);
+	// initialize the light shader object
+	result = m_LightShader->Initialize(m_Direct3D->GetDevice(), hwnd);
 	if (!result)
 	{
-		MessageBox(hwnd, L"Could not initialize the texture shader object.", L"Error", MB_OK);
+		MessageBox(hwnd, L"Could not initialize the light shader object.", L"Error", MB_OK);
 		return false;
 	}
+
+	// create the light object
+	m_Light = new LightClass;
+	if (!m_Light)
+	{
+		return false;
+	}
+
+	// initialize the light object
+	m_Light->SetDiffuseColor(0.f, 1.f, 0.f, 1.f);
+	m_Light->SetDirection(1.f, 0.f, 0.f);
 
 	if (VCARD_INFO)
 	{
@@ -117,11 +149,26 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 
 void GraphicsClass::Shutdown()
 {
-	// release the texture shader object
-	if (m_TextureShader) {
-		m_TextureShader->Shutdown();
-		delete m_TextureShader;
-		m_TextureShader = nullptr;
+	//// release the texture shader object
+	//if (m_TextureShader) {
+	//	m_TextureShader->Shutdown();
+	//	delete m_TextureShader;
+	//	m_TextureShader = nullptr;
+	//}
+
+	// release the light object
+	if (m_Light)
+	{
+		delete m_Light;
+		m_Light = nullptr;
+	}
+
+	// release the light shader object
+	if (m_LightShader)
+	{
+		m_LightShader->Shutdown();
+		delete m_LightShader;
+		m_LightShader = nullptr;
 	}
 
 	// release the model object
@@ -151,9 +198,17 @@ void GraphicsClass::Shutdown()
 bool GraphicsClass::Frame()
 {
 	bool result;
+	static float rotation = 0.f;
+
+	// update the rotation variable each frame
+	rotation += (float)XM_PI * 0.005f;
+	if (rotation > 360.f)
+	{
+		rotation -= 360.f;
+	}
 
 	// render the graphics scene
-	result = Render();
+	result = Render(rotation);
 	if (FAILED(result))
 	{
 		return false;
@@ -162,7 +217,7 @@ bool GraphicsClass::Frame()
 	return true;
 }
 
-bool GraphicsClass::Render()
+bool GraphicsClass::Render(float rotation)
 {
 	XMMATRIX worldMatrix, viewMatrix, projectionMatrix;
 	bool result;
@@ -178,17 +233,34 @@ bool GraphicsClass::Render()
 	m_Camera->GetViewMatrix(viewMatrix);
 	m_Direct3D->GetProjectionMatrix(projectionMatrix);
 
+	// rotate the world matrix by the rotation value so that the triangle will spin
+	worldMatrix = XMMatrixRotationY(rotation) * worldMatrix;
+
 	// put model vertex and index buffers on the graphics pipeline to prepare them for drawing
 	m_Model->Render(m_Direct3D->GetDeviceContext());
 
-	// render the model using the texture shader
-	result = m_TextureShader->Render(
-		m_Direct3D->GetDeviceContext(), 
+	//// render the model using the texture shader
+	//result = m_TextureShader->Render(
+	//	m_Direct3D->GetDeviceContext(), 
+	//	m_Model->GetIndexCount(),
+	//	worldMatrix, viewMatrix, projectionMatrix,
+	//	m_Model->GetTexture()
+	//	);
+	//if (!result) {
+	//	return false;
+	//}
+
+	// render the model using the light shader
+	result = m_LightShader->Render(
+		m_Direct3D->GetDeviceContext(),
 		m_Model->GetIndexCount(),
 		worldMatrix, viewMatrix, projectionMatrix,
-		m_Model->GetTexture()
+		m_Model->GetTexture(),
+		m_Light->GetDirection(),
+		m_Light->GetDiffuseColor()
 		);
-	if (!result) {
+	if (!result)
+	{
 		return false;
 	}
 
