@@ -69,6 +69,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	result = m_Model->Initialize(
 		m_Direct3D->GetDevice(), 
 		m_Direct3D->GetDeviceContext(),
+		"./data/cube.txt",
 		"./data/stone01.tga"
 		);
 	if (!result) 
@@ -100,7 +101,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// initialize the light object
-	m_Light->SetDiffuseColor(0.f, 1.f, 0.f, 1.f);
+	m_Light->SetDiffuseColor(1.f, 1.f, 1.f, 1.f);
 	m_Light->SetDirection(0.f, 0.f, 1.f);
 
 	if (VCARD_INFO)
@@ -210,7 +211,7 @@ bool GraphicsClass::Render(float rotation)
 	m_Direct3D->GetProjectionMatrix(projectionMatrix);
 
 	// rotate the world matrix by the rotation value so that the triangle will spin
-	worldMatrix = XMMatrixRotationY(rotation) * worldMatrix;
+	worldMatrix = XMMatrixRotationY(rotation) * XMMatrixRotationX(rotation) * worldMatrix;
 
 	// put model vertex and index buffers on the graphics pipeline to prepare them for drawing
 	m_Model->Render(m_Direct3D->GetDeviceContext());
