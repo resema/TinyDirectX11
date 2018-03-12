@@ -69,7 +69,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	result = m_Model->Initialize(
 		m_Direct3D->GetDevice(), 
 		m_Direct3D->GetDeviceContext(),
-		"./data/cube.txt",
+		"./data/model.txt",
 		"./data/stone01.tga"
 		);
 	if (!result) 
