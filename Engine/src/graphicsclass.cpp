@@ -104,6 +104,9 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	m_Light->SetAmbientColor(0.15f, 0.15f, 0.15f, 1.f);
 	m_Light->SetDiffuseColor(1.f, 1.f, 1.f, 1.f);
 	m_Light->SetDirection(1.f, 0.f, 0.f);
+	m_Light->SetDirection(0.f, 0.f, 1.f);
+	m_Light->SetSpecularColor(1.f, 1.f, 1.f, 1.f);
+	m_Light->SetSpecularPower(32.f);
 
 	if (VCARD_INFO)
 	{
@@ -179,7 +182,7 @@ bool GraphicsClass::Frame()
 	static float rotation = 0.f;
 
 	// update the rotation variable each frame
-	rotation += (float)XM_PI * 0.005f;
+	rotation += (float)XM_PI * 0.001f;
 	if (rotation > 360.f)
 	{
 		rotation -= 360.f;
@@ -225,7 +228,10 @@ bool GraphicsClass::Render(float rotation)
 		m_Model->GetTexture(),
 		m_Light->GetDirection(),
 		m_Light->GetAmbientColor(),
-		m_Light->GetDiffuseColor()
+		m_Light->GetDiffuseColor(),
+		m_Camera->GetPosition(),
+		m_Light->GetSpecularColor(),
+		m_Light->GetSpecularPower()
 		);
 	if (!result)
 	{
