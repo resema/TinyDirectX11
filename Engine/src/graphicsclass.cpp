@@ -56,7 +56,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// set the initial position of the camera
-	m_Camera->SetPosition(0.f, 0.f, -5.f);
+	m_Camera->SetPosition(0.f, 0.f, -3.f);
 
 	// create the model object
 	m_Model = new ModelClass;
@@ -101,8 +101,9 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// initialize the light object
+	m_Light->SetAmbientColor(0.15f, 0.15f, 0.15f, 1.f);
 	m_Light->SetDiffuseColor(1.f, 1.f, 1.f, 1.f);
-	m_Light->SetDirection(0.f, 0.f, 1.f);
+	m_Light->SetDirection(1.f, 0.f, 0.f);
 
 	if (VCARD_INFO)
 	{
@@ -211,7 +212,7 @@ bool GraphicsClass::Render(float rotation)
 	m_Direct3D->GetProjectionMatrix(projectionMatrix);
 
 	// rotate the world matrix by the rotation value so that the triangle will spin
-	worldMatrix = XMMatrixRotationY(rotation) * XMMatrixRotationX(rotation) * worldMatrix;
+	worldMatrix = XMMatrixRotationY(rotation) * worldMatrix;
 
 	// put model vertex and index buffers on the graphics pipeline to prepare them for drawing
 	m_Model->Render(m_Direct3D->GetDeviceContext());
@@ -223,6 +224,7 @@ bool GraphicsClass::Render(float rotation)
 		worldMatrix, viewMatrix, projectionMatrix,
 		m_Model->GetTexture(),
 		m_Light->GetDirection(),
+		m_Light->GetAmbientColor(),
 		m_Light->GetDiffuseColor()
 		);
 	if (!result)

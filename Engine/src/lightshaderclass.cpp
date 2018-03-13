@@ -42,7 +42,8 @@ void LightShaderClass::Shutdown() {
 
 bool LightShaderClass::Render(ID3D11DeviceContext* deviceContext, int indexCount,
 	XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix,
-	ID3D11ShaderResourceView* texture, XMFLOAT3 lightDirection, XMVECTOR diffuseColor)
+	ID3D11ShaderResourceView* texture, 
+	XMFLOAT3 lightDirection, XMVECTOR ambientColor, XMVECTOR diffuseColor)
 {
 	bool result;
 
@@ -51,7 +52,7 @@ bool LightShaderClass::Render(ID3D11DeviceContext* deviceContext, int indexCount
 		deviceContext,
 		worldMatrix, viewMatrix, projectionMatrix,
 		texture,
-		lightDirection, diffuseColor
+		lightDirection, ambientColor, diffuseColor
 		);
 	if (!result) 
 	{
@@ -355,7 +356,8 @@ void LightShaderClass::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND h
 
 bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 	XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix,
-	ID3D11ShaderResourceView* texture, XMFLOAT3 lightDirection, XMVECTOR diffuseColor)
+	ID3D11ShaderResourceView* texture, 
+	XMFLOAT3 lightDirection, XMVECTOR ambientColor, XMVECTOR diffuseColor)
 {
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
@@ -430,6 +432,7 @@ bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 	dataPtr2 = (LightBufferType*)mappedResource.pData;
 
 	// copy the light variables into the constant buffer
+	dataPtr2->ambientColor = ambientColor;
 	dataPtr2->diffuseColor = diffuseColor;
 	dataPtr2->lightDirection = lightDirection;
 	dataPtr2->padding = 0.f;
