@@ -58,6 +58,8 @@ float4 LightPixelShader(PixelInputType input) : SV_TARGET
 		color = saturate(color);
 
 		// calculate the reflection vector based on the light intensity, normal vector and light direction
+		//  walk twice the lightIntensity in the direction of input.normal and subtract
+		//  the light direction l to get the reflection vector r
 		reflection = normalize(2 * lightIntensity * input.normal - lightDir);
 
 		// determine the amount of specular light based on the 
