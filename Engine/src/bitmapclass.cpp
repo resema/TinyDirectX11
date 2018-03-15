@@ -15,8 +15,8 @@ BitmapClass::~BitmapClass()
 {
 }
 
-bool BitmapClass::Initialize(ID3D11Device* device, int screenWidth, int screenHeight,
-	WCHAR* textureFilename, int bitmapWidth, int bitmapHeight)
+bool BitmapClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, int screenWidth, int screenHeight,
+	char* textureFilename, int bitmapWidth, int bitmapHeight)
 {
 	bool result;
 
@@ -39,7 +39,7 @@ bool BitmapClass::Initialize(ID3D11Device* device, int screenWidth, int screenHe
 	}
 
 	// load the texture for this model
-	result = LoadTexture(device, textureFilename);
+	result = LoadTexture(device, deviceContext, textureFilename);
 	if (!result)
 	{
 		return false;
@@ -194,4 +194,142 @@ bool BitmapClass::UpdateBuffers(ID3D11DeviceContext* deviceContext, int position
 	// if it has changed then update the position it is being renderend to
 	m_previousPosX = positionX;
 	m_previousPosY = positionY;
+
+	// calculate the screen coordinates of the left, right, top and bottom of the bitmap
+	left = (float)((m_screenWidth / 2) * (-1)) + (float)positionX;
+	right = left + (float)m_bitmapWidth;
+	
+	top = (float)((m_screenHeight / 2) * (-1)) + (float)positionY;
+	bottom = top - (float)m_bitmapHeight;
+
+	// create a temporary vertex array
+	vertices = new VertexType[m_vertexCount];
+	if (!vertices)
+	{
+		return false;
+	}
+
+	// load the vertex array with data
+	// first triangle
+	int idx = 0;
+	vertices[idx].position = XMFLOAT3(left, top, 0.f);		// top left
+	vertices[idx++].texture = XMFLOAT2(0.f, 0.f);
+
+	vertices[idx].position = XMFLOAT3(right, bottom, 0.f);	// bottom right
+	vertices[idx++].texture = XMFLOAT2(1.f, 1.f);
+
+	vertices[idx].position = XMFLOAT3(left, bottom, 0.f);	// bottom left
+	vertices[idx++].texture = XMFLOAT2(0.f, 1.f);
+
+	// second triangle
+	vertices[idx].position = XMFLOAT3(left, top, 0.f);		// top left
+	vertices[idx++].texture = XMFLOAT2(0.f, 0.f);
+
+	vertices[idx].position = XMFLOAT3(right, top, 0.f);		// top right
+	vertices[idx++].texture = XMFLOAT2(1.f, 0.f);
+
+	vertices[idx].position = XMFLOAT3(right, bottom, 0.f);	// bottom right
+	vertices[idx++].texture = XMFLOAT2(1.f, 1.f);
+
+	// lock the vertex buffer so it can be written to
+	result = deviceContext->Map(
+		m_vertexBuffer,				// resource
+		0,							// sub-resource
+		D3D11_MAP_WRITE_DISCARD,	// map type
+		0,							// mapflags
+		&mappedResource				// mapped sub-resource
+		);
+	if (FAILED(result))
+	{
+		return false;
+	}
+
+	// get a pointer to the data in the vertex buffer
+	verticesPtr = (VertexType*)mappedResource.pData;
+
+	// copy the data into the vertex buffer
+	memcpy(
+		verticesPtr,							// destination
+		(void*)vertices,						// source
+		(sizeof(VertexType) * m_vertexCount)	// size
+		);
+
+	// unlock the vertex buffer
+	deviceContext->Unmap(
+		m_vertexBuffer,
+		0
+		);
+
+	// release the vertex array 
+	delete[] vertices;
+	vertices = nullptr;
+
+	return true;
+}
+
+void BitmapClass::RenderBuffers(ID3D11DeviceContext* deviceContext)
+{
+	unsigned int stride;
+	unsigned int offset;
+
+	// set vertex buffer stride and offset
+	stride = sizeof(VertexType);
+	offset = 0;
+
+	// set the vertex buffer to active in the input assembler so it can be rendered
+	deviceContext->IASetVertexBuffers(
+		0,					// start slot
+		1,					// nbr of buffer
+		&m_vertexBuffer,	// ptr of vertex buffer
+		&stride,			// stride
+		& offset			// offset
+		);
+
+	// set the index buffer to active in the input assembler so it can be rendered
+	deviceContext->IASetIndexBuffer(
+		m_indexBuffer,			// index buffer
+		DXGI_FORMAT_R32_UINT,	// format
+		0						// offset
+		);
+
+	// set the type of primitive that should be rendered from this vertex buffer
+	deviceContext->IASetPrimitiveTopology(
+		D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST		// topology
+		);
+
+	return;
+}
+
+bool BitmapClass::LoadTexture(ID3D11Device* device, ID3D11DeviceContext* deviceContext, char* filename)
+{
+	bool result;
+
+	// create the texture object
+	m_Texture = new TextureClass;
+	if (!m_Texture)
+	{
+		return false;
+	}
+
+	// initialize the texture object
+	result = m_Texture->Initialize(device, deviceContext, filename);
+	if (!result)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+void BitmapClass::ReleaseTexture()
+{
+	// release the texture object
+	if (m_Texture)
+	{
+		m_Texture->Shutdown();
+		delete m_Texture;
+		m_Texture = nullptr;
+	}
+
+	return;
 }

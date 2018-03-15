@@ -10,6 +10,7 @@ GraphicsClass::GraphicsClass()
 
 	m_LightShader = nullptr;
 	m_Light = nullptr;
+	m_Bitmap = nullptr;
 }
 
 GraphicsClass::GraphicsClass(const GraphicsClass& other)
@@ -108,6 +109,21 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	m_Light->SetSpecularColor(1.f, 1.f, 1.f, 1.f);
 	m_Light->SetSpecularPower(32.f);
 
+	// create the bitmap object
+	m_Bitmap = new BitmapClass;
+	if (!m_Bitmap)
+	{
+		return false;
+	}
+
+	// initialize the bitmap object
+	result = m_Bitmap->Initialize(
+		m_Direct3D->GetDevice(),
+		m_Direct3D->GetDeviceContext(),
+		screenWidth, screenHeight,
+		"./data/seafloor.dss", 256, 256
+		);
+
 	if (VCARD_INFO)
 	{
 		char cardName[128];
@@ -137,6 +153,14 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 
 void GraphicsClass::Shutdown()
 {
+	// release the bitmap object
+	if (m_Bitmap)
+	{
+		m_Bitmap->Shutdown();
+		delete m_Bitmap;
+		m_Bitmap = nullptr;
+	}
+
 	// release the light object
 	if (m_Light)
 	{
@@ -200,7 +224,7 @@ bool GraphicsClass::Frame()
 
 bool GraphicsClass::Render(float rotation)
 {
-	XMMATRIX worldMatrix, viewMatrix, projectionMatrix;
+	XMMATRIX worldMatrix, viewMatrix, projectionMatrix, orthoMatrix;
 	bool result;
 
 	// clear the buffers to begin the scene
@@ -213,6 +237,7 @@ bool GraphicsClass::Render(float rotation)
 	m_Direct3D->GetWorldMatrix(worldMatrix);
 	m_Camera->GetViewMatrix(viewMatrix);
 	m_Direct3D->GetProjectionMatrix(projectionMatrix);
+	m_Direct3D->GetOrthoMatrix(orthoMatrix);
 
 	// rotate the world matrix by the rotation value so that the triangle will spin
 	worldMatrix = XMMatrixRotationY(rotation) * worldMatrix;

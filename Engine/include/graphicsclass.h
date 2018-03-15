@@ -7,6 +7,7 @@
 
 #include "lightshaderclass.h"
 #include "lightclass.h"
+#include "bitmapclass.h"""
 
 const bool VCARD_INFO = false;
 const bool FULL_SCREEN = false;
@@ -40,6 +41,7 @@ private:
 
 	LightShaderClass* m_LightShader;
 	LightClass* m_Light;
+	BitmapClass* m_Bitmap;
 };
 
 #endif	// GRAPHICSCLASS_H
