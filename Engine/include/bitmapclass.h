@@ -30,10 +30,10 @@ public:
 	bool Render(ID3D11DeviceContext*, int, int);
 
 	int GetIndexCount();
-	ID3D11ShaderResouceView* GetTexture();
+	ID3D11ShaderResourceView* GetTexture();
 
 private:
-	bool InitializeBuffer(ID3D11Device*);
+	bool InitializeBuffers(ID3D11Device*);
 	void ShutdownBuffers();
 	bool UpdateBuffers(ID3D11DeviceContext*, int, int);
 	void RenderBuffers(ID3D11DeviceContext*);
