@@ -9,6 +9,7 @@ GraphicsClass::GraphicsClass()
 	m_Model = nullptr;
 
 	m_LightShader = nullptr;
+	m_TextureShader = nullptr;
 	m_Light = nullptr;
 	m_Bitmap = nullptr;
 }
@@ -94,6 +95,21 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 	}
 
+	// create the texture shader object
+	m_TextureShader = new TextureShaderClass;
+	if (!m_TextureShader)
+	{
+		return false;
+	}
+
+	// initialize the light shader object
+	result = m_TextureShader->Initialize(m_Direct3D->GetDevice(), hwnd);
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the texture shader object.", L"Error", MB_OK);
+		return false;
+	}
+
 	// create the light object
 	m_Light = new LightClass;
 	if (!m_Light)
@@ -121,8 +137,14 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		m_Direct3D->GetDevice(),
 		m_Direct3D->GetDeviceContext(),
 		screenWidth, screenHeight,
-		"./data/seafloor.dss", 256, 256
+		"./data/stone01.tga", 
+		256, 256								// width, height
 		);
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the bitmap object.", L"Error", MB_OK);
+		return false;
+	}
 
 	if (VCARD_INFO)
 	{
@@ -174,6 +196,14 @@ void GraphicsClass::Shutdown()
 		m_LightShader->Shutdown();
 		delete m_LightShader;
 		m_LightShader = nullptr;
+	}
+
+	// release the texture shader object
+	if (m_TextureShader)
+	{
+		m_TextureShader->Shutdown();
+		delete m_TextureShader;
+		m_TextureShader = nullptr;
 	}
 
 	// release the model object
@@ -238,6 +268,35 @@ bool GraphicsClass::Render(float rotation)
 	m_Camera->GetViewMatrix(viewMatrix);
 	m_Direct3D->GetProjectionMatrix(projectionMatrix);
 	m_Direct3D->GetOrthoMatrix(orthoMatrix);
+
+	// TURN OFF the z buffer to begin all 2d rendering
+	m_Direct3D->TurnZBufferOff();
+
+	// put the bitmap vertex and index buffers on the graphics pipeline
+	result = m_Bitmap->Render(
+		m_Direct3D->GetDeviceContext(),
+		100,		// position x
+		100		// position y
+		);
+	if (!result)
+	{
+		return false;
+	}
+
+	// render the bitmap with the texture shader
+	result = m_TextureShader->Render(
+		m_Direct3D->GetDeviceContext(),
+		m_Bitmap->GetIndexCount(),
+		worldMatrix, viewMatrix, orthoMatrix,
+		m_Bitmap->GetTexture()
+		);
+	if (!result)
+	{
+		return false;
+	}
+
+	// TURN ON the Z buffer 
+	m_Direct3D->TurnZBufferOn();
 
 	// rotate the world matrix by the rotation value so that the triangle will spin
 	worldMatrix = XMMatrixRotationY(rotation) * worldMatrix;

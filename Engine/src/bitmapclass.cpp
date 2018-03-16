@@ -147,6 +147,30 @@ bool BitmapClass::InitializeBuffers(ID3D11Device* device)
 		return false;
 	}
 
+	// set up the description of the static index buffer
+	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	indexBufferDesc.ByteWidth = sizeof(unsigned long) * m_indexCount;
+	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	indexBufferDesc.CPUAccessFlags = 0;
+	indexBufferDesc.MiscFlags = 0;
+	indexBufferDesc.StructureByteStride = 0;
+
+	// give the subresource structure a ptr to the index data
+	indexData.pSysMem = indices;
+	indexData.SysMemPitch = 0;
+	indexData.SysMemSlicePitch = 0;
+
+	// create the index buffer
+	result = device->CreateBuffer(
+		&indexBufferDesc,
+		&indexData,
+		&m_indexBuffer
+		);
+	if (FAILED(result))
+	{
+		return false;
+	}
+
 	// release the arrays now that the vertex and index buffers
 	delete[] vertices;
 	vertices = nullptr;
