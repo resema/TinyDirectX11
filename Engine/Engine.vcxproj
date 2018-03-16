@@ -150,6 +150,7 @@
     <ClCompile Include="src\cameraclass.cpp" />
     <ClCompile Include="src\colorshaderclass.cpp" />
     <ClCompile Include="src\d3dclass.cpp" />
+    <ClCompile Include="src\fontclass.cpp" />
     <ClCompile Include="src\graphicsclass.cpp" />
     <ClCompile Include="src\inputclass.cpp" />
     <ClCompile Include="src\lightclass.cpp" />
@@ -165,6 +166,7 @@
     <ClInclude Include="include\cameraclass.h" />
     <ClInclude Include="include\colorshaderclass.h" />
     <ClInclude Include="include\d3dclass.h" />
+    <ClInclude Include="include\fontclass.h" />
     <ClInclude Include="include\graphicsclass.h" />
     <ClInclude Include="include\inputclass.h" />
     <ClInclude Include="include\lightclass.h" />

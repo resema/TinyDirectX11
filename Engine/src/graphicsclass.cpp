@@ -138,7 +138,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		m_Direct3D->GetDeviceContext(),
 		screenWidth, screenHeight,
 		"./data/stone01.tga", 
-		256, 256								// width, height
+		64, 64								// width, height
 		);
 	if (!result)
 	{
@@ -276,7 +276,7 @@ bool GraphicsClass::Render(float rotation)
 	result = m_Bitmap->Render(
 		m_Direct3D->GetDeviceContext(),
 		100,		// position x
-		100		// position y
+		100			// position y
 		);
 	if (!result)
 	{
