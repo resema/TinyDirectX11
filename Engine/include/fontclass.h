@@ -43,7 +43,7 @@ public:
 private:
 	bool LoadFontData(char*);
 	void ReleaseFontData();
-	bool LoadTexture(ID3D11Device*, char*);
+	bool LoadTexture(ID3D11Device*, ID3D11DeviceContext*, char*);
 	void ReleaseTexture();
 
 private:
