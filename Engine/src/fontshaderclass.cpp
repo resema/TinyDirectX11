@@ -206,5 +206,252 @@ bool FontShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* v
 		return false;
 	}
 
+	// create a texture sampler state description
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;	// filter method
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;		// behavior if U is larger than 1 or less than 0
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;		// behavior if V is larger than 1 or less than 0
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;		// behavior if W is larger than 1 or less than 0
+	samplerDesc.MipLODBias = 0.f;							// offset from calculated mipmap level
+	samplerDesc.MaxAnisotropy = 1;							// filter	
+	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;	// compare mipmap data with another mipmaps sampled data for this texture
+	samplerDesc.BorderColor[0] = 0;
+	samplerDesc.BorderColor[1] = 0;
+	samplerDesc.BorderColor[2] = 0;
+	samplerDesc.BorderColor[3] = 0;
+	samplerDesc.MinLOD = 0;									// lowest mipmap level (0=most detailed and largest)
+	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;					// largest mipmap level (0=most detailed and largest)
 
+															// create the texture sampler state
+	result = device->CreateSamplerState(
+		&samplerDesc,
+		&m_sampleState
+		);
+	if (FAILED(result)) {
+		return false;
+	}
+
+	// setup the description of the dynamic pixel constant buffer that is in the PS
+	pixelBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	pixelBufferDesc.ByteWidth = sizeof(PixelBufferType);
+	pixelBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	pixelBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	pixelBufferDesc.MiscFlags = 0;
+	pixelBufferDesc.StructureByteStride = 0;
+
+	// create the pixel constant buffer pointer to be accessed in pixel shader
+	result = device->CreateBuffer(
+		&pixelBufferDesc,
+		NULL,
+		&m_pixelBuffer
+		);
+	if (FAILED(result))
+	{
+		return false;
+	}
+
+	return true;
+}
+
+void FontShaderClass::ShutdownShader()
+{
+	// release the pixel constant buffer
+	if (m_pixelBuffer)
+	{
+		m_pixelBuffer->Release();
+		m_pixelBuffer = nullptr;
+	}
+
+	// release the sampler state
+	if (m_sampleState) {
+		m_sampleState->Release();
+		m_sampleState = nullptr;
+	}
+
+	// release the matrix constant buffer
+	if (m_constantBuffer) {
+		m_constantBuffer->Release();
+		m_constantBuffer = nullptr;
+	}
+
+	// release the layout
+	if (m_layout) {
+		m_layout->Release();
+		m_layout = nullptr;
+	}
+
+	// release the pixel shader
+	if (m_pixelShader) {
+		m_pixelShader->Release();
+		m_pixelShader = nullptr;
+	}
+
+	// release the vertex shader
+	if (m_vertexShader) {
+		m_vertexShader->Release();
+		m_vertexShader = nullptr;
+	}
+
+	return;
+}
+
+void FontShaderClass::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, WCHAR* shaderFilename)
+{
+	char* compileErrors;
+	unsigned long long bufferSize;
+	std::ofstream fout;
+
+	// get a pointer to the error message text buffer
+	compileErrors = (char*)(errorMessage->GetBufferPointer());
+
+	// get the length of the message
+	bufferSize = errorMessage->GetBufferSize();
+
+	// open a file to write the error message to
+	fout.open("shader-error.txt");
+
+	// write out the error message
+	for (unsigned long long i = 0; i < bufferSize; i++) {
+		fout << compileErrors[i];
+	}
+
+	// close the file 
+	fout.close();
+
+	// release the error message
+	errorMessage->Release();
+	errorMessage = nullptr;
+
+	// pop a message up on the screen to notify the user to check the file
+	MessageBox(hwnd, L"Error compiling shader. Check shader-error.txt for message.", shaderFilename, MB_OK);
+
+	return;
+}
+
+// send matrices into the vertex shader during Render function call
+bool FontShaderClass::SetShaderParameters(
+	ID3D11DeviceContext* deviceContext,
+	XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix,
+	ID3D11ShaderResourceView* texture, XMVECTOR pixelColor)
+{
+	HRESULT result;
+	D3D11_MAPPED_SUBRESOURCE mappedResource;
+	ConstantBufferType* dataPtr;
+	unsigned int bufferNumber;
+	PixelBufferType* dataPtr2;
+
+	// lock the constant buffer so it can be written to
+	result = deviceContext->Map(
+		m_constantBuffer,
+		0,
+		D3D11_MAP_WRITE_DISCARD,
+		0,
+		&mappedResource
+		);
+	if (FAILED(result))
+	{
+		return false;
+	}
+
+	// get a ptr to the data in the constant buffer
+	dataPtr = (ConstantBufferType*)mappedResource.pData;
+
+	// transpose the matrices to prepare them for the shader
+	worldMatrix = XMMatrixTranspose(worldMatrix);
+	viewMatrix = XMMatrixTranspose(viewMatrix);
+	projectionMatrix = XMMatrixTranspose(projectionMatrix);
+
+	// copy the matrices into the constant buffer
+	dataPtr->world = worldMatrix;
+	dataPtr->view = viewMatrix;
+	dataPtr->projection = projectionMatrix;
+
+	// unlock the constant buffer
+	deviceContext->Unmap(
+		m_constantBuffer,
+		0
+		);
+
+	// set the position of the constant buffer in the vertex shader
+	bufferNumber = 0;
+
+	// finally set the constant buffer in the vertex shader with the updated values
+	deviceContext->VSSetConstantBuffers(
+		bufferNumber,
+		1,
+		&m_constantBuffer
+		);
+
+	// set shader texture resource in the pixel shader
+	deviceContext->PSSetShaderResources(
+		0,			// start Slot
+		1,			// num views
+		&texture	// shader resource view
+		);
+
+	// lock the PIXEL constant buffer so it can be written to
+	result = deviceContext->Map(
+		m_pixelBuffer,
+		0,
+		D3D11_MAP_WRITE_DISCARD,
+		0,
+		&mappedResource
+		);
+	if (FAILED(result))
+	{
+		return false;
+	}
+
+	// get a ptr to the data in the PIXEL constant buffer
+	dataPtr2 = (PixelBufferType*)mappedResource.pData;
+
+	// copy the pixel color into the pixel constant buffer
+	dataPtr2->pixelColor = pixelColor;
+
+	// unlock the pixel constant buffer
+	deviceContext->Unmap(
+		m_pixelBuffer,
+		0
+		);
+
+	// set the position of the pixel constant in the pixel shader
+	bufferNumber = 0;
+
+	// now set the pixel constant buffer in the pixel shader with the updated value
+	deviceContext->PSSetConstantBuffers(
+		bufferNumber,
+		1,
+		&m_pixelBuffer
+		);
+
+	return true;
+}
+
+void FontShaderClass::RenderShader(ID3D11DeviceContext* deviceContext, int indexCount)
+{
+	// set the vertex input layout
+	deviceContext->IASetInputLayout(m_layout);
+
+	// set the vertex and pixel shaders that will be used to render this triangle
+	deviceContext->VSSetShader(
+		m_vertexShader,			// vertex shader
+		NULL,					// only used if shader uses interfaces
+		0						// number of class-instances in the array
+		);
+	deviceContext->PSSetShader(
+		m_pixelShader,			// pixel shader
+		NULL, 					// only used if shader uses interfaces
+		0						// number of class-instances in the array
+		);
+
+	// set the sampler state in the pixel shader
+	deviceContext->PSSetSamplers(
+		0,				// start slot
+		1,				// number of samplers
+		&m_sampleState	// sampler
+		);
+
+	// render the triangles
+	deviceContext->DrawIndexed(indexCount, 0, 0);
+
+	return;
 }
