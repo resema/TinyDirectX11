@@ -156,7 +156,7 @@ void FontClass::BuildVertexArray(void* vertices, char* sentence, float drawX, fl
 	numLetters = (int)strlen(sentence);
 
 	// initialize the index to the vertex array
-	index = 0;
+	idx = 0;
 
 	// draw each letter into a quad
 	for (int i = 0; i < numLetters; i++)

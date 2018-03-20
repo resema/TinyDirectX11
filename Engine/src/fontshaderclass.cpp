@@ -19,7 +19,7 @@ bool FontShaderClass::Initialize(ID3D11Device* device, HWND hwnd)
 	bool result;
 
 	// initialize the vertex and pixel shaders
-	result = InititalizeShader(device, hwnd, L"./shader/font.vs.hlsl", L"./shader/font.ps.hlsl");
+	result = InitializeShader(device, hwnd, L"./shader/font.vs.hlsl", L"./shader/font.ps.hlsl");
 	if (!result)
 	{
 		return false;
@@ -43,7 +43,7 @@ bool FontShaderClass::Render(ID3D11DeviceContext* deviceContext, int indexCount,
 	bool result;
 
 	// set the shader parameters that it will use for rendering
-	result = SetShaderParameter(
+	result = SetShaderParameters(
 		deviceContext,
 		worldMatrix,
 		viewMatrix,
