@@ -124,3 +124,26 @@ bool TextClass::Render(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix,
 
 	return true;
 }
+
+bool TextClass::InitializeSentence(SentenceType** sentence, int maxLength, ID3D11Device* device)
+{
+	VertexType* vertices;
+	unsigned long *indices;
+	D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
+	D3D11_SUBRESOURCE_DATA vertexData, indexData;
+	HRESULT result;
+
+	// create a new sentence object
+	*sentence = new SentenceType;
+	if (!*sentence)
+	{
+		return false;
+	}
+
+	// initialize the sentence buffers to null
+	(*sentence)->vertexBuffer = nullptr;
+	(*sentence)->indexBuffer = nullptr;
+
+	// set the maximum length of the sentence
+	(*sentence)->maxLength = maxLength;
+}

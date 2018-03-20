@@ -29,7 +29,7 @@ public:
 	TextClass(TextClass&&) = default;
 	TextClass& operator(TextClass&&) = default;
 
-	bool Initialize(ID3D11Device*, ID3D11DeviceContext*, HWND, int, int XMMATRIX);
+	bool Initialize(ID3D11Device*, ID3D11DeviceContext*, HWND, int, int, XMMATRIX);
 	void Shutdown();
 	bool Render(ID3D11DeviceContext*, XMMATRIX, XMMATRIX);
 
