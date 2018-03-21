@@ -9,6 +9,7 @@
 #include "textureshaderclass.h"
 #include "lightclass.h"
 #include "bitmapclass.h"
+#include "textclass.h"
 
 const bool VCARD_INFO = false;
 const bool FULL_SCREEN = false;
@@ -44,6 +45,7 @@ private:
 	TextureShaderClass* m_TextureShader;
 	LightClass* m_Light;
 	BitmapClass* m_Bitmap;
+	TextClass* m_Text;
 };
 
 #endif	// GRAPHICSCLASS_H

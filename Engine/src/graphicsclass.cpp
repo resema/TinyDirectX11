@@ -12,6 +12,7 @@ GraphicsClass::GraphicsClass()
 	m_TextureShader = nullptr;
 	m_Light = nullptr;
 	m_Bitmap = nullptr;
+	m_Text = nullptr;
 }
 
 GraphicsClass::GraphicsClass(const GraphicsClass& other)
@@ -25,6 +26,7 @@ GraphicsClass::~GraphicsClass()
 bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 {
 	bool result;
+	XMMATRIX baseViewMatrix;
 
 	// create the Direct3D object
 	m_Direct3D = new D3DClass;
@@ -56,6 +58,11 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	{
 		return false;
 	}
+
+	// initialize a base view matrix with the camera for 2D user interface rendering
+	m_Camera->SetPosition(0.f, 0.f, -1.f);
+	m_Camera->Render();
+	m_Camera->GetViewMatrix(baseViewMatrix);
 
 	// set the initial position of the camera
 	m_Camera->SetPosition(0.f, 0.f, -3.f);
@@ -143,6 +150,27 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the bitmap object.", L"Error", MB_OK);
+		return false;
+	}
+
+	// create the text object
+	m_Text = new TextClass;
+	if (!m_Text)
+	{
+		return false;
+	}
+
+	// initialize the text object
+	result = m_Text->Initialize(
+		m_Direct3D->GetDevice(),
+		m_Direct3D->GetDeviceContext(),
+		hwnd,
+		screenWidth, screenHeight,
+		baseViewMatrix
+		);
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the text object", L"Error", MB_OK);
 		return false;
 	}
 
