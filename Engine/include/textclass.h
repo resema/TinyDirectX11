@@ -27,7 +27,7 @@ public:
 	// rule of five
 	TextClass& operator=(const TextClass&) = default;
 	TextClass(TextClass&&) = default;
-	TextClass& operator(TextClass&&) = default;
+	TextClass& operator=(TextClass&&) = default;
 
 	bool Initialize(ID3D11Device*, ID3D11DeviceContext*, HWND, int, int, XMMATRIX);
 	void Shutdown();

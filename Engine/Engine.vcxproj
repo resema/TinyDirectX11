@@ -151,6 +151,7 @@
     <ClCompile Include="src\colorshaderclass.cpp" />
     <ClCompile Include="src\d3dclass.cpp" />
     <ClCompile Include="src\fontclass.cpp" />
+    <ClCompile Include="src\fontshaderclass.cpp" />
     <ClCompile Include="src\graphicsclass.cpp" />
     <ClCompile Include="src\inputclass.cpp" />
     <ClCompile Include="src\lightclass.cpp" />
@@ -158,6 +159,7 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\modelclass.cpp" />
     <ClCompile Include="src\systemclass.cpp" />
+    <ClCompile Include="src\textclass.cpp" />
     <ClCompile Include="src\textureclass.cpp" />
     <ClCompile Include="src\textureshaderclass.cpp" />
   </ItemGroup>
@@ -167,12 +169,14 @@
     <ClInclude Include="include\colorshaderclass.h" />
     <ClInclude Include="include\d3dclass.h" />
     <ClInclude Include="include\fontclass.h" />
+    <ClInclude Include="include\fontshaderclass.h" />
     <ClInclude Include="include\graphicsclass.h" />
     <ClInclude Include="include\inputclass.h" />
     <ClInclude Include="include\lightclass.h" />
     <ClInclude Include="include\lightshaderclass.h" />
     <ClInclude Include="include\modelclass.h" />
     <ClInclude Include="include\systemclass.h" />
+    <ClInclude Include="include\textclass.h" />
     <ClInclude Include="include\textureclass.h" />
     <ClInclude Include="include\textureshaderclass.h" />
   </ItemGroup>
@@ -195,6 +199,14 @@
       <FileType>Document</FileType>
     </None>
     <None Include="shader\light.vs.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shader\font.ps.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="shader\font.vs.hlsl">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>

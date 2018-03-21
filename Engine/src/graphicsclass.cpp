@@ -203,6 +203,14 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 
 void GraphicsClass::Shutdown()
 {
+	// release the text object
+	if (m_Text)
+	{
+		m_Text->Shutdown();
+		delete m_Text;
+		m_Text = nullptr;
+	}
+
 	// release the bitmap object
 	if (m_Bitmap)
 	{
@@ -282,7 +290,7 @@ bool GraphicsClass::Frame()
 
 bool GraphicsClass::Render(float rotation)
 {
-	XMMATRIX worldMatrix, viewMatrix, projectionMatrix, orthoMatrix;
+	XMMATRIX fixedWorldMatrix, worldMatrix, viewMatrix, projectionMatrix, orthoMatrix;
 	bool result;
 
 	// clear the buffers to begin the scene
@@ -292,6 +300,7 @@ bool GraphicsClass::Render(float rotation)
 	m_Camera->Render();
 
 	// get the world, view and projection matrices from the camera and d3d objects
+	m_Direct3D->GetWorldMatrix(fixedWorldMatrix);
 	m_Direct3D->GetWorldMatrix(worldMatrix);
 	m_Camera->GetViewMatrix(viewMatrix);
 	m_Direct3D->GetProjectionMatrix(projectionMatrix);
@@ -349,6 +358,25 @@ bool GraphicsClass::Render(float rotation)
 	{
 		return false;
 	}
+
+	// TURN OFF Z buffer to begin 2D rendering
+	m_Direct3D->TurnZBufferOff();
+
+	// TURN ON the alpha blending before rendering the text
+	m_Direct3D->TurnOnAlphaBlending();
+
+	// render the text strings
+	result = m_Text->Render(m_Direct3D->GetDeviceContext(), fixedWorldMatrix, orthoMatrix);
+	if (!result)
+	{
+		return false;
+	}
+
+	// TURN OFF the alpha blending
+	m_Direct3D->TurnOffAlphaBlending();
+
+	// TURN ON the Z buffer
+	m_Direct3D->TurnZBufferOn();
 
 	// present the rendered scene to the screen
 	m_Direct3D->EndScene();

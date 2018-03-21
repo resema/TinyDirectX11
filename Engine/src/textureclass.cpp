@@ -97,6 +97,27 @@ bool TextureClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceC
 	return true;
 }
 
+bool TextureClass::InitializeDDS(ID3D11Device* device, char* filename)
+{
+	HRESULT result;
+
+	// load the DDS texture in
+	result = D3DX11CreateShaderResourceViewFromFile(
+		device,
+		filename,
+		NULL,
+		NULL,
+		&m_texture,
+		NULL
+		);
+	if (FAILED(result))
+	{
+		return false;
+	}
+
+	return true;
+}
+
 void TextureClass::Shutdown()
 {
 	// release the texture view resource

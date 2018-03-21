@@ -33,7 +33,7 @@ public:
 	FontClass(FontClass&&) = default;
 	FontClass& operator=(FontClass&&) = default;
 
-	bool Initialize(ID3D11Device*, char*, char*);
+	bool Initialize(ID3D11Device*, ID3D11DeviceContext*, char*, char*);
 	void Shutdown();
 
 	ID3D11ShaderResourceView* GetTexture();
