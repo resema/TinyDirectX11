@@ -102,7 +102,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>./include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./include;../DirectXTex/DDSTextureLoader</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -136,7 +136,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>./include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./include;../DirectXTex/DDSTextureLoader</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -146,6 +146,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\DirectXTex\DDSTextureLoader\DDSTextureLoader.cpp" />
     <ClCompile Include="src\bitmapclass.cpp" />
     <ClCompile Include="src\cameraclass.cpp" />
     <ClCompile Include="src\colorshaderclass.cpp" />
@@ -164,6 +165,7 @@
     <ClCompile Include="src\textureshaderclass.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\DirectXTex\DDSTextureLoader\DDSTextureLoader.h" />
     <ClInclude Include="include\bitmapclass.h" />
     <ClInclude Include="include\cameraclass.h" />
     <ClInclude Include="include\colorshaderclass.h" />

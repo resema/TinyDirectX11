@@ -1,4 +1,5 @@
 #include "textureclass.h"
+#include "DDSTextureLoader.h"
 
 TextureClass::TextureClass()
 {
@@ -97,18 +98,18 @@ bool TextureClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceC
 	return true;
 }
 
-bool TextureClass::InitializeDDS(ID3D11Device* device, char* filename)
+bool TextureClass::InitializeDDS(ID3D11DeviceContext* deviceContext, char* filename)
 {
 	HRESULT result;
 
 	// load the DDS texture in
-	result = D3DX11CreateShaderResourceViewFromFile(
-		device,
+	result = DirectX::CreateDDSTextureFromFile(
+		deviceContext,
 		filename,
 		NULL,
+		&m_textureView,
 		NULL,
-		&m_texture,
-		NULL
+		DirectX::DDS_ALPHA_MODE_UNKNOWN
 		);
 	if (FAILED(result))
 	{
