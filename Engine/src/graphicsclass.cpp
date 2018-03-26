@@ -145,7 +145,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		m_Direct3D->GetDeviceContext(),
 		screenWidth, screenHeight,
 		"./data/stone01.tga", 
-		64, 64								// width, height
+		128, 128								// width, height
 		);
 	if (!result)
 	{

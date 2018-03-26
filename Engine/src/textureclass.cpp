@@ -98,18 +98,22 @@ bool TextureClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceC
 	return true;
 }
 
-bool TextureClass::InitializeDDS(ID3D11DeviceContext* deviceContext, char* filename)
+bool TextureClass::InitializeDDS(ID3D11Device* device, ID3D11DeviceContext* deviceContext, char* filename)
 {
 	HRESULT result;
+	ID3D11Resource* texture;
+
+	// convert char to wchar_t
+	wchar_t text_wchar[30];
+	size_t length = strlen(filename);
+	mbstowcs_s(&length, text_wchar, filename, length);
 
 	// load the DDS texture in
 	result = DirectX::CreateDDSTextureFromFile(
-		deviceContext,
-		filename,
+		device,
+		text_wchar,
 		NULL,
-		&m_textureView,
-		NULL,
-		DirectX::DDS_ALPHA_MODE_UNKNOWN
+		&m_textureView
 		);
 	if (FAILED(result))
 	{

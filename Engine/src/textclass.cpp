@@ -26,7 +26,7 @@ bool TextClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceCont
 	}
 
 	// initialize the font object
-	result = m_Font->Initialize(device, deviceContext, "./data/fontdata.txt", "./data/font.dds");
+	result = m_Font->Initialize(device, deviceContext, "./data/fontdata.txt", "./data/font_conv.dds");
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the font object.", L"Error", MB_OK);
@@ -56,7 +56,7 @@ bool TextClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceCont
 	}
 
 	// now update the sentence vertex buffer with the new string information
-	result = UpdateSentence(m_sentence1, "Hello", 100, 100, 1.f, 1.f, 1.f, deviceContext);
+	result = UpdateSentence(m_sentence1, "Hello World", 300, 50, 1.f, 1.f, 1.f, deviceContext);
 	if (!result)
 	{
 		return false;
@@ -70,7 +70,7 @@ bool TextClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceCont
 	}
 
 	// now update the sentence vertex buffer with the new string information
-	result = UpdateSentence(m_sentence2, "Goodbye", 100, 200, 1.f, 1.f, 0.f, deviceContext);
+	result = UpdateSentence(m_sentence2, "Font Engine", 300, 200, 1.f, 1.f, 0.f, deviceContext);
 	if (!result)
 	{
 		return false;

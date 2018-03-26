@@ -9,7 +9,7 @@ cbuffer PerFrameBuffer
 // typedefs
 struct VertexInputType
 {
-	float4 positition : POSITION;
+	float4 position : POSITION;
 	float2 tex : TEXCOORD0;
 };
 

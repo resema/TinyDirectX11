@@ -168,6 +168,9 @@ bool FontShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* v
 	polygonLayout[1].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 	polygonLayout[1].InstanceDataStepRate = 0;
 
+	// get a count of the elements in the layout
+	numElements = sizeof(polygonLayout) / sizeof(polygonLayout[0]);
+
 	// create the vertex input layout
 	result = device->CreateInputLayout(
 		polygonLayout,							// vertex layout
