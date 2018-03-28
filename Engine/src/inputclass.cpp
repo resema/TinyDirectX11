@@ -211,6 +211,8 @@ bool InputClass::ReadMouse()
 			return false;
 		}
 	}
+
+	return true;
 }
 
 void InputClass::ProcessInput()

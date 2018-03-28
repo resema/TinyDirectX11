@@ -266,31 +266,30 @@ void GraphicsClass::Shutdown()
 	return;
 }
 
-bool GraphicsClass::Frame()
+bool GraphicsClass::Frame(int mouseX, int mouseY)
 {
 	bool result;
-	static float rotation = 0.f;
 
-	// update the rotation variable each frame
-	rotation += (float)XM_PI * 0.001f;
-	if (rotation > 360.f)
-	{
-		rotation -= 360.f;
-	}
-
-	// render the graphics scene
-	result = Render(rotation);
-	if (FAILED(result))
+	// set the location of the mouse
+	result = m_Text->SetMousePosition(
+		mouseX, 
+		mouseY, 
+		m_Direct3D->GetDeviceContext()
+		);
+	if (!result)
 	{
 		return false;
 	}
 
+	// set the position of the camera
+	m_Camera->SetPosition(1.f, 1.f, -5.f);
+
 	return true;
 }
 
-bool GraphicsClass::Render(float rotation)
+bool GraphicsClass::Render()
 {
-	XMMATRIX fixedWorldMatrix, worldMatrix, viewMatrix, projectionMatrix, orthoMatrix;
+	XMMATRIX worldMatrix, viewMatrix, projectionMatrix, orthoMatrix;
 	bool result;
 
 	// clear the buffers to begin the scene
@@ -300,7 +299,6 @@ bool GraphicsClass::Render(float rotation)
 	m_Camera->Render();
 
 	// get the world, view and projection matrices from the camera and d3d objects
-	m_Direct3D->GetWorldMatrix(fixedWorldMatrix);
 	m_Direct3D->GetWorldMatrix(worldMatrix);
 	m_Camera->GetViewMatrix(viewMatrix);
 	m_Direct3D->GetProjectionMatrix(projectionMatrix);
@@ -335,9 +333,6 @@ bool GraphicsClass::Render(float rotation)
 	// TURN ON the Z buffer 
 	m_Direct3D->TurnZBufferOn();
 
-	// rotate the world matrix by the rotation value so that the triangle will spin
-	worldMatrix = XMMatrixRotationY(rotation) * worldMatrix;
-
 	// put model vertex and index buffers on the graphics pipeline to prepare them for drawing
 	m_Model->Render(m_Direct3D->GetDeviceContext());
 
@@ -366,7 +361,7 @@ bool GraphicsClass::Render(float rotation)
 	m_Direct3D->TurnOnAlphaBlending();
 
 	// render the text strings
-	result = m_Text->Render(m_Direct3D->GetDeviceContext(), fixedWorldMatrix, orthoMatrix);
+	result = m_Text->Render(m_Direct3D->GetDeviceContext(), worldMatrix, orthoMatrix);
 	if (!result)
 	{
 		return false;

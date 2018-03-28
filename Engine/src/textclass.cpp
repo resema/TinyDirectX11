@@ -384,3 +384,52 @@ bool TextClass::RenderSentence(ID3D11DeviceContext* deviceContext, SentenceType*
 
 	return true;
 }
+
+bool TextClass::SetMousePosition(int mouseX, int mouseY, ID3D11DeviceContext* deviceContext)
+{
+	char tempString[16];
+	char mouseString[16];
+	bool result;
+
+	// convert the mouseX integer to string format
+	_itoa_s(mouseX, tempString, 10);
+
+	// setup the mouseX string
+	strcpy_s(mouseString, "Mouse X: ");
+	strcat_s(mouseString, tempString);
+
+	// update the sentence vertex buffer with the new string information
+	result = UpdateSentence(
+		m_sentence1, 
+		mouseString, 
+		20, 20, 
+		1.f, 1.f, 1.f, 
+		deviceContext
+		);
+	if (!result)
+	{
+		return false;
+	}
+
+	// convert the mouseY integer to string format
+	_itoa_s(mouseY, tempString, 10);
+
+	// setup the mouseY string
+	strcpy_s(mouseString, "Mouse Y: ");
+	strcat_s(mouseString, tempString);
+
+	// update the sentence vertex buffer with the new string information
+	result = UpdateSentence(
+		m_sentence2,
+		mouseString,
+		20, 40,
+		1.f, 1.f, 1.f,
+		deviceContext
+	);
+	if (!result)
+	{
+		return false;
+	}
+
+	return true;
+}
