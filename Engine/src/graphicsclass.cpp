@@ -1,8 +1,11 @@
 #include "graphicsclass.h"
 
 #include <string>
+#include <dinput.h>
+
 
 GraphicsClass::GraphicsClass()
+	: posX(0.f), posY(0.f), posZ(0.f)
 {
 	m_Direct3D = nullptr;
 	m_Camera = nullptr;
@@ -266,7 +269,7 @@ void GraphicsClass::Shutdown()
 	return;
 }
 
-bool GraphicsClass::Frame(int mouseX, int mouseY)
+bool GraphicsClass::Frame(int mouseX, int mouseY, unsigned char* key)
 {
 	bool result;
 
@@ -281,8 +284,44 @@ bool GraphicsClass::Frame(int mouseX, int mouseY)
 		return false;
 	}
 
+	// set the key pressed
+	result = m_Text->SetKeyPressed(
+		key,
+		m_Direct3D->GetDeviceContext()
+	);
+	if (!result)
+	{
+		return false;
+	}
+
+	// update position
+	if (key[DIK_A] & 0x80)		// left
+	{
+		posX -= STEP;
+	}
+	if (key[DIK_S] & 0x80)		// back
+	{
+		posZ -= STEP;
+	}
+	if (key[DIK_D] & 0x80)		// right
+	{
+		posX += STEP;
+	}
+	if (key[DIK_Q] & 0x80)		// down
+	{
+		posY += STEP;
+	}
+	if (key[DIK_W] & 0x80)		// forward
+	{
+		posZ += STEP;
+	}
+	if (key[DIK_E] & 0x80)		// up
+	{
+		posY -= STEP;
+	}
+
 	// set the position of the camera
-	m_Camera->SetPosition(1.f, 1.f, -5.f);
+	m_Camera->SetPosition(posX, posY, posZ);
 
 	return true;
 }

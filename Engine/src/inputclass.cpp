@@ -228,6 +228,9 @@ void InputClass::ProcessInput()
 	if (m_mouseX > m_screenWidth) { m_mouseX = m_screenWidth; }
 	if (m_mouseY > m_screenHeight) { m_mouseY = m_screenHeight; }
 
+	// update the key pressed on the keyboard during the frame
+	memcpy_s(m_key, sizeof(m_key), m_keyboardState, sizeof(m_keyboardState));
+
 	return;
 }
 
@@ -246,6 +249,13 @@ void InputClass::GetMouseLocation(int& mouseX, int& mouseY)
 {
 	mouseX = m_mouseX;
 	mouseY = m_mouseY;
+
+	return;
+}
+
+void InputClass::GetKeyPressed(unsigned char** key)
+{
+	*key = m_key;
 
 	return;
 }

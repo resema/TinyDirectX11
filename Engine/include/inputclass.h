@@ -8,6 +8,7 @@
 #pragma comment(lib, "dxguid.lib")
 
 #include <dinput.h>
+#include <iostream>
 
 class InputClass
 {
@@ -26,6 +27,7 @@ public:
 
 	bool IsEscapePressed();
 	void GetMouseLocation(int&, int&);
+	void GetKeyPressed(unsigned char**);
 
 private:
 	bool ReadKeyboard();
@@ -42,6 +44,7 @@ private:
 
 	int m_screenWidth, m_screenHeight;
 	int m_mouseX, m_mouseY;
+	unsigned char m_key[256];
 };
 
 #endif	// INPUTCLASS_H

@@ -1,5 +1,7 @@
 #include "textclass.h"
 
+#include <dinput.h>
+
 TextClass::TextClass()
 	: m_Font(nullptr), m_FontShader(nullptr),
 	  m_sentence1(nullptr), m_sentence2(nullptr)
@@ -395,34 +397,21 @@ bool TextClass::SetMousePosition(int mouseX, int mouseY, ID3D11DeviceContext* de
 	_itoa_s(mouseX, tempString, 10);
 
 	// setup the mouseX string
-	strcpy_s(mouseString, "Mouse X: ");
+	strcpy_s(mouseString, "X: ");
 	strcat_s(mouseString, tempString);
-
-	// update the sentence vertex buffer with the new string information
-	result = UpdateSentence(
-		m_sentence1, 
-		mouseString, 
-		20, 20, 
-		1.f, 1.f, 1.f, 
-		deviceContext
-		);
-	if (!result)
-	{
-		return false;
-	}
 
 	// convert the mouseY integer to string format
 	_itoa_s(mouseY, tempString, 10);
 
 	// setup the mouseY string
-	strcpy_s(mouseString, "Mouse Y: ");
+	strcat_s(mouseString, ", Y: ");
 	strcat_s(mouseString, tempString);
 
 	// update the sentence vertex buffer with the new string information
 	result = UpdateSentence(
-		m_sentence2,
+		m_sentence1,
 		mouseString,
-		20, 40,
+		20, 20,
 		1.f, 1.f, 1.f,
 		deviceContext
 	);
@@ -432,4 +421,57 @@ bool TextClass::SetMousePosition(int mouseX, int mouseY, ID3D11DeviceContext* de
 	}
 
 	return true;
+}
+
+bool TextClass::SetKeyPressed(unsigned char* key, ID3D11DeviceContext* deviceContext)
+{
+	char tempString[16];
+	char keyString[16];
+	bool result;
+
+	if (key[DIK_A] & 0x80)
+	{
+		strcpy_s(tempString, "A");
+	}
+	else if (key[DIK_S] & 0x80)
+	{
+		strcpy_s(tempString, "S");
+	}
+	else if (key[DIK_D] & 0x80)
+	{
+		strcpy_s(tempString, "D");
+	}
+	else if (key[DIK_Q] & 0x80)
+	{
+		strcpy_s(tempString, "Q");
+	}
+	else if (key[DIK_W] & 0x80)
+	{
+		strcpy_s(tempString, "W");
+	}
+	else if (key[DIK_E] & 0x80)
+	{
+		strcpy_s(tempString, "E");
+	}
+	else
+	{
+		strcpy_s(tempString, "");
+	}
+
+	// setup the key string
+	strcpy_s(keyString, "Key: ");
+	strcat_s(keyString, tempString);
+
+	// update the sentence vertex buffer with the new string information
+	result = UpdateSentence(
+		m_sentence2,
+		keyString,
+		20, 40,
+		1.f, 1.f, 1.f,
+		deviceContext
+	);
+	if (!result)
+	{
+		return false;
+	}
 }

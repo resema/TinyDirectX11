@@ -18,6 +18,7 @@ const bool FULL_SCREEN = false;
 const bool VSYNC_ENABLED = true;
 const float SCREEN_DEPTH = 1000.0f;
 const float	SCREEN_NEAR = 0.1f;
+const float STEP = 0.01f;
 
 
 class GraphicsClass
@@ -34,7 +35,7 @@ public:
 	bool Initialize(int, int, HWND);
 	void Shutdown();
 
-	bool Frame(int, int);
+	bool Frame(int, int, unsigned char*);
 	bool Render();
 
 private:
@@ -47,6 +48,11 @@ private:
 	LightClass* m_Light;
 	BitmapClass* m_Bitmap;
 	TextClass* m_Text;
+
+private:
+	float posX;
+	float posY;
+	float posZ;
 };
 
 #endif	// GRAPHICSCLASS_H

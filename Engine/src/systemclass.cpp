@@ -130,6 +130,7 @@ bool SystemClass::Frame()
 {
 	bool result;
 	int mouseX, mouseY;
+	unsigned char* key = nullptr;
 
 	// do the input frame processing
 	result = m_Input->Frame();
@@ -141,8 +142,11 @@ bool SystemClass::Frame()
 	// get the location of the mouse from the input object
 	m_Input->GetMouseLocation(mouseX, mouseY);
 
+	// get the key pressed from the input object
+	m_Input->GetKeyPressed(&key);
+
 	// do the frame processing for the graphics obj
-	result = m_Graphics->Frame(mouseX, mouseY);
+	result = m_Graphics->Frame(mouseX, mouseY, key);
 	if (!result)
 	{
 		return false;
