@@ -19,6 +19,7 @@ const bool VSYNC_ENABLED = true;
 const float SCREEN_DEPTH = 1000.0f;
 const float	SCREEN_NEAR = 0.1f;
 const float STEP = 0.01f;
+const float STEP_LRG = 0.1f;
 
 
 class GraphicsClass
@@ -50,9 +51,10 @@ private:
 	TextClass* m_Text;
 
 private:
-	float posX;
-	float posY;
-	float posZ;
+	XMVECTOR position;
+	float posX, posY, posZ;
+	float angleH;
+	float angleV;
 };
 
 #endif	// GRAPHICSCLASS_H

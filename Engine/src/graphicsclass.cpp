@@ -5,7 +5,9 @@
 
 
 GraphicsClass::GraphicsClass()
-	: posX(0.f), posY(0.f), posZ(0.f)
+	: position(XMVectorZero()), 
+	  posX(0.f), posY(0.f), posZ(0.f), 
+	  angleH(0.f), angleV(0.f)
 {
 	m_Direct3D = nullptr;
 	m_Camera = nullptr;
@@ -273,16 +275,12 @@ bool GraphicsClass::Frame(int mouseX, int mouseY, unsigned char* key)
 {
 	bool result;
 
-	// set the location of the mouse
-	result = m_Text->SetMousePosition(
-		mouseX, 
-		mouseY, 
-		m_Direct3D->GetDeviceContext()
-		);
-	if (!result)
-	{
-		return false;
-	}
+	// update angles
+	angleH += mouseX * STEP_LRG;
+	angleV += mouseY * STEP_LRG;
+
+	// set the rotation of the camera
+	m_Camera->SetRotation(angleV, angleH, 0.f);
 
 	// set the key pressed
 	result = m_Text->SetKeyPressed(
@@ -294,18 +292,49 @@ bool GraphicsClass::Frame(int mouseX, int mouseY, unsigned char* key)
 		return false;
 	}
 
+	// calculate direction
+	XMVECTOR direction = XMLoadFloat3(&XMFLOAT3(
+		cosf(angleV * 3.14f / 240.f) * sinf(angleH * 3.14f / 320.f),
+		sinf(angleV * 3.14f / 240.f),
+		cosf(angleV * 3.14f / 240.f) * cosf(angleH * 3.14f / 320.f)
+	));
+
+	// calculate right vector
+	XMVECTOR right = XMLoadFloat3(&XMFLOAT3(
+		sinf(angleH - 3.14f / 2.f),
+		0,
+		cosf(angleH - 3.14f / 2.f)
+	));
+
+	// print the direction
+	XMFLOAT3 temp;
+	XMStoreFloat3(&temp, right);
+	result = m_Text->SetDirection(
+		temp.x,
+		temp.y,
+		temp.z,
+		m_Direct3D->GetDeviceContext()
+	);
+	if (!result)
+	{
+		return false;
+	}
+
 	// update position
 	if (key[DIK_A] & 0x80)		// left
 	{
 		posX -= STEP;
+		position -= right;
 	}
 	if (key[DIK_S] & 0x80)		// back
 	{
 		posZ -= STEP;
+		position -= direction;
 	}
 	if (key[DIK_D] & 0x80)		// right
 	{
 		posX += STEP;
+		position += right;
 	}
 	if (key[DIK_Q] & 0x80)		// down
 	{
@@ -314,14 +343,19 @@ bool GraphicsClass::Frame(int mouseX, int mouseY, unsigned char* key)
 	if (key[DIK_W] & 0x80)		// forward
 	{
 		posZ += STEP;
+		position += direction;
 	}
 	if (key[DIK_E] & 0x80)		// up
 	{
 		posY -= STEP;
 	}
 
+	XMFLOAT3 tempPosition;
+	XMStoreFloat3(&tempPosition, position);
+
 	// set the position of the camera
-	m_Camera->SetPosition(posX, posY, posZ);
+	//m_Camera->SetPosition(posX, posY, tempPosition.z);
+	m_Camera->SetPosition(tempPosition.x, tempPosition.y, tempPosition.z);
 
 	return true;
 }

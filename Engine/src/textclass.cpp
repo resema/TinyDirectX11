@@ -387,30 +387,37 @@ bool TextClass::RenderSentence(ID3D11DeviceContext* deviceContext, SentenceType*
 	return true;
 }
 
-bool TextClass::SetMousePosition(int mouseX, int mouseY, ID3D11DeviceContext* deviceContext)
+bool TextClass::SetDirection(float x, float y, float z, ID3D11DeviceContext* deviceContext)
 {
 	char tempString[16];
-	char mouseString[16];
+	char directionString[16];
 	bool result;
 
-	// convert the mouseX integer to string format
-	_itoa_s(mouseX, tempString, 10);
+	// convert the X float to string format
+	sprintf_s(tempString, "%.1f", x);
 
-	// setup the mouseX string
-	strcpy_s(mouseString, "X: ");
-	strcat_s(mouseString, tempString);
+	// setup the directionX string
+	strcpy_s(directionString, "");
+	strcat_s(directionString, tempString);
 
-	// convert the mouseY integer to string format
-	_itoa_s(mouseY, tempString, 10);
+	// convert the Y float to string format
+	sprintf_s(tempString, "%.1f", y);
 
-	// setup the mouseY string
-	strcat_s(mouseString, ", Y: ");
-	strcat_s(mouseString, tempString);
+	// setup the directionY string
+	strcat_s(directionString, ", ");
+	strcat_s(directionString, tempString);
+
+	// convert the Y float to string format
+	sprintf_s(tempString, "%.1f", z);
+
+	// setup the directionY string
+	strcat_s(directionString, ", ");
+	strcat_s(directionString, tempString);
 
 	// update the sentence vertex buffer with the new string information
 	result = UpdateSentence(
 		m_sentence1,
-		mouseString,
+		directionString,
 		20, 20,
 		1.f, 1.f, 1.f,
 		deviceContext

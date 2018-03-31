@@ -218,15 +218,15 @@ bool InputClass::ReadMouse()
 void InputClass::ProcessInput()
 {
 	// update the location of the mouse cursor based on the change during the frame
-	m_mouseX += m_mouseState.lX;
-	m_mouseY += m_mouseState.lY;
+	m_mouseX = m_mouseState.lX;
+	m_mouseY = m_mouseState.lY;
 
-	// ensure the mouse location doesn't exceed the screen width or height
-	if (m_mouseX < 0) { m_mouseX = 0; }
-	if (m_mouseY < 0) { m_mouseY = 0; }
+	//// ensure the mouse location doesn't exceed the screen width or height
+	//if (m_mouseX < 0) { m_mouseX = 0; }
+	//if (m_mouseY < 0) { m_mouseY = 0; }
 
-	if (m_mouseX > m_screenWidth) { m_mouseX = m_screenWidth; }
-	if (m_mouseY > m_screenHeight) { m_mouseY = m_screenHeight; }
+	//if (m_mouseX > m_screenWidth) { m_mouseX = m_screenWidth; }
+	//if (m_mouseY > m_screenHeight) { m_mouseY = m_screenHeight; }
 
 	// update the key pressed on the keyboard during the frame
 	memcpy_s(m_key, sizeof(m_key), m_keyboardState, sizeof(m_keyboardState));
