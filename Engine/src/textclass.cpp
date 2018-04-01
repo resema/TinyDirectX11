@@ -404,14 +404,14 @@ bool TextClass::SetDirection(float x, float y, float z, ID3D11DeviceContext* dev
 	sprintf_s(tempString, "%.1f", y);
 
 	// setup the directionY string
-	strcat_s(directionString, ", ");
+	strcat_s(directionString, "/");
 	strcat_s(directionString, tempString);
 
 	// convert the Y float to string format
 	sprintf_s(tempString, "%.1f", z);
 
 	// setup the directionY string
-	strcat_s(directionString, ", ");
+	strcat_s(directionString, "/");
 	strcat_s(directionString, tempString);
 
 	// update the sentence vertex buffer with the new string information

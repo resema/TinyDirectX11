@@ -13,6 +13,10 @@ CameraClass::CameraClass()
 	m_directionX = 0.f;
 	m_directionY = 0.f;
 	m_directionZ = 1.f;
+
+	m_upX = 0.f;
+	m_upY = 1.f;
+	m_upZ = 0.f;
 }
 
 CameraClass::CameraClass(const CameraClass& other)
@@ -47,6 +51,14 @@ void CameraClass::SetDirection(float x, float y, float z)
 	return;
 }
 
+void CameraClass::SetUp(float x, float y, float z)
+{
+	m_upX = x;
+	m_upY = y;
+	m_upZ = z;
+	return;
+}
+
 XMFLOAT3 CameraClass::GetPosition()
 {
 	return XMFLOAT3(m_positionX, m_positionY, m_positionZ);
@@ -65,9 +77,9 @@ void CameraClass::Render()
 	XMMATRIX rotationMatrix;
 
 	// setup the vector that points upwards
-	up.x = 0.f;
-	up.y = 1.f;
-	up.z = 0.f;
+	up.x = m_upX;
+	up.y = m_upY;
+	up.z = m_upZ;
 
 	// load it into a XMVECTOR structure
 	upVector = XMLoadFloat3(&up);

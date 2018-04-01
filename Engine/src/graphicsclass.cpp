@@ -277,10 +277,11 @@ bool GraphicsClass::Frame(int mouseX, int mouseY, unsigned char* key)
 
 	// update angles
 	angleH += mouseX;
+	if (angleH > 360.f) { angleH -= 360.f; }
+	else if (angleH < 0.f) { angleH += 360.f; }
 	angleV += mouseY;
-
-	// set the rotation of the camera
-	m_Camera->SetRotation(angleV, angleH, 0.f);
+	if (angleV > 360.f) { angleV -= 360.f; }
+	else if(angleV < 0.f) { angleV += 360.f; }
 
 	// calculate direction
 	XMVECTOR direction = XMLoadFloat3(&XMFLOAT3(
@@ -291,14 +292,17 @@ bool GraphicsClass::Frame(int mouseX, int mouseY, unsigned char* key)
 
 	// calculate right vector
 	XMVECTOR right = XMLoadFloat3(&XMFLOAT3(
-		sinf(angleV * 0.0174532925f - 3.14f / 2.f),
+		sinf(angleH * 0.0174532925f - 3.14f / 2.f),
 		0,
 		cosf(angleH * 0.0174532925f - 3.14f / 2.f)
 	));
 
+	// calculate the up vector
+	XMVECTOR up = XMVector3Cross(right, direction);
+
 	// print the direction
 	XMFLOAT3 temp;
-	XMStoreFloat3(&temp, direction);
+	XMStoreFloat3(&temp, up);
 	result = m_Text->SetDirection(
 		temp.x,
 		temp.y,
@@ -312,7 +316,7 @@ bool GraphicsClass::Frame(int mouseX, int mouseY, unsigned char* key)
 
 	// set the key pressed
 	result = m_Text->SetValuef(
-		angleH,
+		angleV,
 		m_Direct3D->GetDeviceContext()
 	);
 	if (!result)
@@ -324,7 +328,7 @@ bool GraphicsClass::Frame(int mouseX, int mouseY, unsigned char* key)
 	// update position
 	if (key[DIK_A] & 0x80)		// left
 	{
-		position -= right * STEP;
+		position += right * STEP;
 	}
 	if (key[DIK_S] & 0x80)		// back
 	{
@@ -332,10 +336,11 @@ bool GraphicsClass::Frame(int mouseX, int mouseY, unsigned char* key)
 	}
 	if (key[DIK_D] & 0x80)		// right
 	{
-		position += right * STEP;
+		position -= right * STEP;
 	}
 	if (key[DIK_Q] & 0x80)		// down
 	{
+		position -= up * STEP;
 	}
 	if (key[DIK_W] & 0x80)		// forward
 	{
@@ -343,12 +348,18 @@ bool GraphicsClass::Frame(int mouseX, int mouseY, unsigned char* key)
 	}
 	if (key[DIK_E] & 0x80)		// up
 	{
+		position += up * STEP;
 	}
 
 	// set the direciton of the camera
 	XMFLOAT3 tempDirection;
 	XMStoreFloat3(&tempDirection, direction);
 	m_Camera->SetDirection(tempDirection.x, tempDirection.y, tempDirection.z);
+
+	// set the up of the camera
+	XMFLOAT3 tempUp;
+	XMStoreFloat3(&tempUp, up);
+	m_Camera->SetUp(tempUp.x, tempUp.y, tempUp.z);
 
 	// set the position of the camera
 	XMFLOAT3 tempPosition;
