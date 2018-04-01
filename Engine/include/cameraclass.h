@@ -13,6 +13,7 @@ public:
 
 	void SetPosition(float, float, float);
 	void SetRotation(float, float, float);
+	void SetDirection(float, float, float);
 
 	XMFLOAT3 GetPosition();
 	XMFLOAT3 GetRotation();
@@ -23,6 +24,7 @@ public:
 private:
 	float m_positionX, m_positionY, m_positionZ;
 	float m_rotationX, m_rotationY, m_rotationZ;
+	float m_directionX, m_directionY, m_directionZ;
 	XMMATRIX m_viewMatrix;
 };
 

@@ -9,6 +9,10 @@ CameraClass::CameraClass()
 	m_rotationX = 0.f;
 	m_rotationY = 0.f;
 	m_rotationZ = 0.f;
+
+	m_directionX = 0.f;
+	m_directionY = 0.f;
+	m_directionZ = 1.f;
 }
 
 CameraClass::CameraClass(const CameraClass& other)
@@ -32,6 +36,14 @@ void CameraClass::SetRotation(float x, float y, float z)
 	m_rotationX = x;
 	m_rotationY = y;
 	m_rotationZ = z;
+	return;
+}
+
+void CameraClass::SetDirection(float x, float y, float z)
+{
+	m_directionX = x;
+	m_directionY = y;
+	m_directionZ = z;
 	return;
 }
 
@@ -69,9 +81,9 @@ void CameraClass::Render()
 	positionVector = XMLoadFloat3(&position);
 
 	// setup where the camera is looking at by default
-	lookAt.x = 0.f;
-	lookAt.y = 0.f;
-	lookAt.z = 1.f;
+	lookAt.x = m_directionX;
+	lookAt.y = m_directionY;
+	lookAt.z = m_directionZ;
 
 	// load it into a XMVECTOR structure
 	lookAtVector = XMLoadFloat3(&lookAt);

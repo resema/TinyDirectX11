@@ -34,6 +34,7 @@ public:
 	bool Render(ID3D11DeviceContext*, XMMATRIX, XMMATRIX);
 
 	bool SetDirection(float, float, float, ID3D11DeviceContext*);
+	bool SetValuef(float, ID3D11DeviceContext*);
 	bool SetKeyPressed(unsigned char*, ID3D11DeviceContext*);
 
 private:
