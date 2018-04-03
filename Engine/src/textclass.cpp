@@ -511,3 +511,93 @@ bool TextClass::SetKeyPressed(unsigned char* key, ID3D11DeviceContext* deviceCon
 		return false;
 	}
 }
+
+bool TextClass::SetFps(int fps, ID3D11DeviceContext* deviceContext)
+{
+	char tempString[16];
+	char fpsString[16];
+	float red, green, blue;
+	bool result;
+
+	// truncate the fps to below 10'000
+	if (fps > 9999)
+	{
+		fps = 9999;
+	}
+
+	// convert the fps integer to string format
+	_itoa_s(fps, tempString, 10);
+
+	// setup the fps string
+	strcpy_s(fpsString, "Fps: ");
+	strcat_s(fpsString, tempString);
+
+	// if fps is 60 or above set the fps color to green
+	if (fps >= 60)
+	{
+		red = 0.f;
+		green = 1.f;
+		blue = 0.f;
+	}
+
+	// if fps is below 60 set the fps color to yellow
+	if (fps < 60)
+	{
+		red = 1.f;
+		green = 1.f;
+		blue = 0.f;
+	}
+
+	// if fps is below 30 set the fps color to red
+	if (fps < 30)
+	{
+		red = 1.f;
+		green = 0.f;
+		blue = 0.f;
+	}
+
+	// update the sentence vertex buffer with the new string information
+	result = UpdateSentence(
+		m_sentence1,
+		fpsString,
+		20, 20,
+		red, green, blue,
+		deviceContext
+	);
+	if (!result)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool TextClass::SetCpu(int cpu, ID3D11DeviceContext* deviceContext)
+{
+	char tempString[16];
+	char cpuString[16];
+	bool result;
+
+	// convert the cpu integer to string format
+	_itoa_s(cpu, tempString, 10);
+
+	// setup the cpu string
+	strcpy_s(cpuString, "Cpu: ");
+	strcat_s(cpuString, tempString);
+	strcat_s(cpuString, "%");
+
+	// update the sentence vertex buffer with the new string information
+	result = UpdateSentence(
+		m_sentence2,
+		cpuString,
+		20, 40,
+		0.f, 0.f, 1.f,
+		deviceContext
+	);
+	if (!result)
+	{
+		return false;
+	}
+
+	return true;
+}

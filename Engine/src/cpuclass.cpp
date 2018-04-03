@@ -59,10 +59,10 @@ void CpuClass::Frame()
 			PdhCollectQueryData(m_queryHandle);
 
 			PdhGetFormattedCounterValue(
-				m_counterHandle,
-				PDH_FMT_LONG,
-				NULL,
-				&value
+				m_counterHandle,	// handle of the coutner
+				PDH_FMT_LONG,		// data type of the formatte value
+				NULL,				// counter type
+				&value				// struct that receives the counter value
 			);
 
 			m_cpuUsage = value.longValue;
@@ -70,3 +70,20 @@ void CpuClass::Frame()
 	}
 	return;
 }
+
+int CpuClass::GetCpuPercentage()
+{
+	int usage;
+
+	if (m_canReadCpu)
+	{
+		usage = (int)m_cpuUsage;
+	}
+	else
+	{
+		usage = 0;
+	}
+
+	return usage;
+}
+

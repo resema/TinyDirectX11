@@ -271,7 +271,10 @@ void GraphicsClass::Shutdown()
 	return;
 }
 
-bool GraphicsClass::Frame(int mouseX, int mouseY, unsigned char* key)
+bool GraphicsClass::Frame(
+	int fps, int cpu, float frameTime,
+	int mouseX, int mouseY, unsigned char* key
+)
 {
 	bool result;
 
@@ -300,13 +303,9 @@ bool GraphicsClass::Frame(int mouseX, int mouseY, unsigned char* key)
 	// calculate the up vector
 	XMVECTOR up = XMVector3Cross(right, direction);
 
-	// print the direction
-	XMFLOAT3 temp;
-	XMStoreFloat3(&temp, up);
-	result = m_Text->SetDirection(
-		temp.x,
-		temp.y,
-		temp.z,
+	// set the frame per second
+	result = m_Text->SetFps(
+		fps, 
 		m_Direct3D->GetDeviceContext()
 	);
 	if (!result)
@@ -314,9 +313,9 @@ bool GraphicsClass::Frame(int mouseX, int mouseY, unsigned char* key)
 		return false;
 	}
 
-	// set the key pressed
-	result = m_Text->SetValuef(
-		angleV,
+	// set the cpu usage
+	result = m_Text->SetCpu(
+		cpu,
 		m_Direct3D->GetDeviceContext()
 	);
 	if (!result)

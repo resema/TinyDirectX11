@@ -150,9 +150,11 @@
     <ClCompile Include="src\bitmapclass.cpp" />
     <ClCompile Include="src\cameraclass.cpp" />
     <ClCompile Include="src\colorshaderclass.cpp" />
+    <ClCompile Include="src\cpuclass.cpp" />
     <ClCompile Include="src\d3dclass.cpp" />
     <ClCompile Include="src\fontclass.cpp" />
     <ClCompile Include="src\fontshaderclass.cpp" />
+    <ClCompile Include="src\fpsclass.cpp" />
     <ClCompile Include="src\graphicsclass.cpp" />
     <ClCompile Include="src\inputclass.cpp" />
     <ClCompile Include="src\lightclass.cpp" />
@@ -163,15 +165,18 @@
     <ClCompile Include="src\textclass.cpp" />
     <ClCompile Include="src\textureclass.cpp" />
     <ClCompile Include="src\textureshaderclass.cpp" />
+    <ClCompile Include="src\timerclass.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\DirectXTex\DDSTextureLoader\DDSTextureLoader.h" />
     <ClInclude Include="include\bitmapclass.h" />
     <ClInclude Include="include\cameraclass.h" />
     <ClInclude Include="include\colorshaderclass.h" />
+    <ClInclude Include="include\cpuclass.h" />
     <ClInclude Include="include\d3dclass.h" />
     <ClInclude Include="include\fontclass.h" />
     <ClInclude Include="include\fontshaderclass.h" />
+    <ClInclude Include="include\fpsclass.h" />
     <ClInclude Include="include\graphicsclass.h" />
     <ClInclude Include="include\inputclass.h" />
     <ClInclude Include="include\lightclass.h" />
@@ -181,6 +186,7 @@
     <ClInclude Include="include\textclass.h" />
     <ClInclude Include="include\textureclass.h" />
     <ClInclude Include="include\textureshaderclass.h" />
+    <ClInclude Include="include\timerclass.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shader\color.vs.hlsl" />

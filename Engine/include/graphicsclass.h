@@ -36,7 +36,7 @@ public:
 	bool Initialize(int, int, HWND);
 	void Shutdown();
 
-	bool Frame(int, int, unsigned char*);
+	bool Frame(int, int, float, int, int, unsigned char*);
 	bool Render();
 
 private:

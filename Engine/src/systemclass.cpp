@@ -1,7 +1,7 @@
 #include "systemclass.h"
 
 SystemClass::SystemClass()
-	: m_Input(0), m_Graphics(0)
+	: m_Input(0), m_Graphics(0), m_Fps(0), m_Cpu(0), m_Timer(0)
 {
 }
 
@@ -54,11 +54,64 @@ bool SystemClass::Initialize()
 		return false;
 	}
 
+	//create the fps object
+	m_Fps = new FpsClass;
+	if (!m_Fps)
+	{
+		return false;
+	}
+	// initialize the fps object
+	m_Fps->Initialize();
+
+	// create the cpu object
+	m_Cpu = new CpuClass;
+	if (!m_Cpu)
+	{
+		return false;
+	}
+	// initialize the cpu object
+	m_Cpu->Initialize();
+
+	// create the timer object
+	m_Timer = new TimerClass;
+	if (!m_Timer)
+	{
+		return false;
+	}
+	// intialize the timer object
+	result = m_Timer->Initialize();
+	if (!result)
+	{
+		MessageBox(m_hwnd, L"Could not initialize the Timer objet.", L"Error", MB_OK);
+		return false;
+	}
+
 	return true;
 }
 
 void SystemClass::Shutdown()
 {
+	// release the timer object
+	if (m_Timer)
+	{
+		delete m_Timer;
+		m_Timer = nullptr;
+	}
+
+	// release the cpu object
+	if (m_Cpu)
+	{
+		delete m_Cpu;
+		m_Cpu = nullptr;
+	}
+
+	// release the fps object
+	if (m_Fps)
+	{
+		delete m_Fps;
+		m_Fps = nullptr;
+	}
+
 	// Release the graphics object
 	if (m_Graphics)
 	{
@@ -132,6 +185,11 @@ bool SystemClass::Frame()
 	int mouseX, mouseY;
 	unsigned char* key = nullptr;
 
+	// update the system stats
+	m_Timer->Frame();
+	m_Fps->Frame();
+	m_Cpu->Frame();
+
 	// do the input frame processing
 	result = m_Input->Frame();
 	if (!result)
@@ -146,7 +204,14 @@ bool SystemClass::Frame()
 	m_Input->GetKeyPressed(&key);
 
 	// do the frame processing for the graphics obj
-	result = m_Graphics->Frame(mouseX, mouseY, key);
+	result = m_Graphics->Frame(
+		m_Fps->GetFps(),
+		m_Cpu->GetCpuPercentage(),
+		m_Timer->GetTime(),
+		mouseX, 
+		mouseY, 
+		key
+	);
 	if (!result)
 	{
 		return false;
