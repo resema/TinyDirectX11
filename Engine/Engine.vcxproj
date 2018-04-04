@@ -177,6 +177,7 @@
     <ClInclude Include="include\fontclass.h" />
     <ClInclude Include="include\fontshaderclass.h" />
     <ClInclude Include="include\fpsclass.h" />
+    <ClInclude Include="include\frustumclass.h" />
     <ClInclude Include="include\graphicsclass.h" />
     <ClInclude Include="include\inputclass.h" />
     <ClInclude Include="include\lightclass.h" />

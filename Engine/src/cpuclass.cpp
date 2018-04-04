@@ -19,7 +19,7 @@ void CpuClass::Initialize()
 	}
 
 	// set query object to poll all cpus in the system
-	status = PdhAddCounter(
+	status = PdhAddEnglishCounter(
 		m_queryHandle,									// query
 		TEXT("\\Processor(_Total)\\% processor time"),	// counter path
 		0,												// user-defined value
