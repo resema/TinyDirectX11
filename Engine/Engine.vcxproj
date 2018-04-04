@@ -155,6 +155,7 @@
     <ClCompile Include="src\fontclass.cpp" />
     <ClCompile Include="src\fontshaderclass.cpp" />
     <ClCompile Include="src\fpsclass.cpp" />
+    <ClCompile Include="src\frustumclass.cpp" />
     <ClCompile Include="src\graphicsclass.cpp" />
     <ClCompile Include="src\inputclass.cpp" />
     <ClCompile Include="src\lightclass.cpp" />
