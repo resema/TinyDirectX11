@@ -86,20 +86,34 @@ bool FrustumClass::CheckPoint(float x, float y, float z)
 	// check if the point is inside all six planes of the view frustum
 	for (int i = 0; i < 6; i++)
 	{
-		XMFLOAT3 dist;
-		// calculate distance between plane and point
-		XMVECTOR sum = XMVectorSum(
-			XMPlaneDotCoord(
-				m_planes[i],						// plane
-				XMLoadFloat3(&XMFLOAT3(x, y, z))	// point
-			)
-		);
-		XMStoreFloat3(&dist, sum);
-		if (dist.x < 0.f)
+		if (!isInsideHalfspace(i, XMFLOAT3(x, y, z)))
 		{
-			return false;	// outside of frustum
+			return false;
 		}
 	}
 
 	return true;
+}
+
+
+
+//
+// helper class for calculating if a point is inside the halfspace of the clipping plane
+bool FrustumClass::isInsideHalfspace(int plane, XMFLOAT3 pt)
+{
+	XMFLOAT3 dist;
+	// calculate distance between plane and point
+	XMVECTOR sum = XMVectorSum(
+		XMPlaneDotCoord(
+			m_planes[plane],
+			XMLoadFloat3(&pt)
+		)
+	);
+	XMStoreFloat3(&dist, sum);
+	if (dist.x < 0.f)
+	{
+		return false;	// outsde of halfspace of plane
+	}
+
+	return true;		// inside of halfspace of plane
 }
