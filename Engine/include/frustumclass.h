@@ -26,7 +26,7 @@ private:
 	XMVECTOR m_planes[6];
 
 private:
-	bool isInsideHalfspace(int, XMFLOAT3);
+	float distanceToPlane(int, XMFLOAT3);
 };
 
 #endif	// FRUSTUMCLASS_H

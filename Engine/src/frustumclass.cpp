@@ -86,7 +86,7 @@ bool FrustumClass::CheckPoint(float x, float y, float z)
 	// check if the point is inside all six planes of the view frustum
 	for (int i = 0; i < 6; i++)
 	{
-		if (!isInsideHalfspace(i, XMFLOAT3(x, y, z)))
+		if (distanceToPlane(i, XMFLOAT3(x, y, z)) < 0.f)
 		{
 			return false;
 		}
@@ -95,11 +95,125 @@ bool FrustumClass::CheckPoint(float x, float y, float z)
 	return true;
 }
 
+bool FrustumClass::CheckCube(float xCenter, float yCenter, float zCenter, float radius)
+{
+	// check if any one point of the cube is in the view frustum
+	for (int i = 0; i < 6; i++)
+	{
+		if (distanceToPlane(i, XMFLOAT3(xCenter - radius, yCenter - radius, zCenter - radius)) >= 0.f)
+		{
+			continue;
+		}
 
+		if (distanceToPlane(i, XMFLOAT3(xCenter + radius, yCenter - radius, zCenter - radius)) >= 0.f)
+		{
+			continue;
+		}
+
+		if (distanceToPlane(i, XMFLOAT3(xCenter - radius, yCenter + radius, zCenter - radius)) >= 0.f)
+		{
+			continue;
+		}
+		
+		if (distanceToPlane(i, XMFLOAT3(xCenter + radius, yCenter + radius, zCenter - radius)) >= 0.f)
+		{
+			continue;
+		}
+
+		if (distanceToPlane(i, XMFLOAT3(xCenter - radius, yCenter - radius, zCenter + radius)) >= 0.f)
+		{
+			continue;
+		}
+
+		if (distanceToPlane(i, XMFLOAT3(xCenter + radius, yCenter - radius, zCenter + radius)) >= 0.f)
+		{
+			continue;
+		}
+
+		if (distanceToPlane(i, XMFLOAT3(xCenter - radius, yCenter + radius, zCenter + radius)) >= 0.f)
+		{
+			continue;
+		}
+
+		if (distanceToPlane(i, XMFLOAT3(xCenter + radius, yCenter + radius, zCenter + radius)) >= 0.f)
+		{
+			continue;
+		}
+
+		return false;
+	}
+
+	return true;
+}
+
+bool FrustumClass::CheckSphere(float xCenter, float yCenter, float zCenter, float radius)
+{
+	// check if the radius of the sphere is inside the view frustum
+	for (int i = 0; i < 6; i++)
+	{
+		if (distanceToPlane(i, XMFLOAT3(xCenter, yCenter, zCenter)) < -radius)
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
+bool FrustumClass::CheckRectangle(float xCenter, float yCenter, float zCenter, float xSize, float ySize, float zSize)
+{
+	// check if any of the 6 planes of the rectangle are inside the view frustum
+	for (int i = 0; i < 6; i++)
+	{
+		if (distanceToPlane(i, XMFLOAT3(xCenter - xSize, yCenter - ySize, zCenter - zSize)) >= 0.f)
+		{
+			continue;
+		}
+
+		if (distanceToPlane(i, XMFLOAT3(xCenter + xSize, yCenter - ySize, zCenter - zSize)) >= 0.f)
+		{
+			continue;
+		}
+
+		if (distanceToPlane(i, XMFLOAT3(xCenter - xSize, yCenter + ySize, zCenter - zSize)) >= 0.f)
+		{
+			continue;
+		}
+
+		if (distanceToPlane(i, XMFLOAT3(xCenter + xSize, yCenter + ySize, zCenter - zSize)) >= 0.f)
+		{
+			continue;
+		}
+
+		if (distanceToPlane(i, XMFLOAT3(xCenter - xSize, yCenter - ySize, zCenter + zSize)) >= 0.f)
+		{
+			continue;
+		}
+
+		if (distanceToPlane(i, XMFLOAT3(xCenter + xSize, yCenter - ySize, zCenter + zSize)) >= 0.f)
+		{
+			continue;
+		}
+
+		if (distanceToPlane(i, XMFLOAT3(xCenter - xSize, yCenter + ySize, zCenter + zSize)) >= 0.f)
+		{
+			continue;
+		}
+
+		if (distanceToPlane(i, XMFLOAT3(xCenter + xSize, yCenter + ySize, zCenter + zSize)) >= 0.f)
+		{
+			continue;
+		}
+
+		return false;
+	}
+
+	return true;
+}
 
 //
-// helper class for calculating if a point is inside the halfspace of the clipping plane
-bool FrustumClass::isInsideHalfspace(int plane, XMFLOAT3 pt)
+// helper function
+float FrustumClass::distanceToPlane(int plane, XMFLOAT3 pt)
 {
 	XMFLOAT3 dist;
 	// calculate distance between plane and point
@@ -110,10 +224,5 @@ bool FrustumClass::isInsideHalfspace(int plane, XMFLOAT3 pt)
 		)
 	);
 	XMStoreFloat3(&dist, sum);
-	if (dist.x < 0.f)
-	{
-		return false;	// outsde of halfspace of plane
-	}
-
-	return true;		// inside of halfspace of plane
+	return dist.x;
 }

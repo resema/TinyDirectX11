@@ -162,6 +162,7 @@
     <ClCompile Include="src\lightshaderclass.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\modelclass.cpp" />
+    <ClCompile Include="src\modellistclass.cpp" />
     <ClCompile Include="src\systemclass.cpp" />
     <ClCompile Include="src\textclass.cpp" />
     <ClCompile Include="src\textureclass.cpp" />
@@ -184,6 +185,7 @@
     <ClInclude Include="include\lightclass.h" />
     <ClInclude Include="include\lightshaderclass.h" />
     <ClInclude Include="include\modelclass.h" />
+    <ClInclude Include="include\modellistclass.h" />
     <ClInclude Include="include\systemclass.h" />
     <ClInclude Include="include\textclass.h" />
     <ClInclude Include="include\textureclass.h" />
