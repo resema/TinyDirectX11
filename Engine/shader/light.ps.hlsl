@@ -37,7 +37,7 @@ float4 LightPixelShader(PixelInputType input) : SV_TARGET
 	//  at this texture coord location
 	textureColor = shaderTexture.Sample(SampleType, input.tex);
 
-	// set the default output colot to the ambient light value for all pixels
+	// set the default output color to the ambient light value for all pixels
 	color = ambientColor;
 
 	// initialize the specular color

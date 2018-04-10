@@ -35,6 +35,7 @@ public:
 
 	bool SetDirection(float, float, float, ID3D11DeviceContext*);
 	bool SetValuef(float, ID3D11DeviceContext*);
+	bool SetValuei(int, ID3D11DeviceContext*);
 	bool SetKeyPressed(unsigned char*, ID3D11DeviceContext*);
 
 	bool SetFps(int, ID3D11DeviceContext*);
@@ -54,6 +55,7 @@ private:
 
 	SentenceType* m_sentence1;
 	SentenceType* m_sentence2;
+	SentenceType* m_sentence3;
 };
 
 #endif	// TEXTCLASS_H_

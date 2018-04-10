@@ -4,7 +4,7 @@
 
 TextClass::TextClass()
 	: m_Font(nullptr), m_FontShader(nullptr),
-	  m_sentence1(nullptr), m_sentence2(nullptr)
+	  m_sentence1(nullptr), m_sentence2(nullptr), m_sentence3(nullptr)
 {
 }
 
@@ -78,6 +78,20 @@ bool TextClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceCont
 		return false;
 	}
 
+	// initialize the thired sentence
+	result = InitializeSentence(&m_sentence3, 16, device);
+	if (!result)
+	{
+		return false;
+	}
+
+	// now update the sentence vertex buffer with the new string information
+	result = UpdateSentence(m_sentence3, "Font Engine", 300, 350, 1.f, 1.f, 0.f, deviceContext);
+	if (!result)
+	{
+		return false;
+	}
+
 	return true;
 }
 
@@ -86,6 +100,7 @@ void TextClass::Shutdown()
 	// release the sentences
 	ReleaseSentence(&m_sentence1);
 	ReleaseSentence(&m_sentence2);
+	ReleaseSentence(&m_sentence3);
 
 	// release the font shader object
 	if (m_FontShader)
@@ -119,6 +134,13 @@ bool TextClass::Render(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix,
 
 	// draw the second sentence
 	result = RenderSentence(deviceContext, m_sentence2, worldMatrix, orthoMatrix);
+	if (!result)
+	{
+		return false;
+	}
+
+	// draw the third sentence
+	result = RenderSentence(deviceContext, m_sentence3, worldMatrix, orthoMatrix);
 	if (!result)
 	{
 		return false;
@@ -445,9 +467,38 @@ bool TextClass::SetValuef(float x, ID3D11DeviceContext* deviceContext)
 
 	// update the sentence vertex buffer with the new string information
 	result = UpdateSentence(
-		m_sentence2,
+		m_sentence3,
 		directionString,
-		20, 40,
+		20, 60,
+		1.f, 1.f, 1.f,
+		deviceContext
+	);
+	if (!result)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool TextClass::SetValuei(int x, ID3D11DeviceContext* deviceContext)
+{
+	char tempString[16];
+	char directionString[16];
+	bool result;
+
+	// convert the X float to string format
+	sprintf_s(tempString, "%i", x);
+
+	// setup the directionX string
+	strcpy_s(directionString, "");
+	strcat_s(directionString, tempString);
+
+	// update the sentence vertex buffer with the new string information
+	result = UpdateSentence(
+		m_sentence3,
+		directionString,
+		20, 60,
 		1.f, 1.f, 1.f,
 		deviceContext
 	);

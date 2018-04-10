@@ -33,9 +33,9 @@ bool ModelListClass::Initialize(int numModels)
 		m_ModelInfoList[i].color = XMFLOAT4(red, green, blue, 1.f);
 
 		// generate random position in front of the view for the node
-		m_ModelInfoList[i].positionX = (((float)rand() - (float)rand() / RAND_MAX) * 10.f);
-		m_ModelInfoList[i].positionY = (((float)rand() - (float)rand() / RAND_MAX) * 10.f);
-		m_ModelInfoList[i].positionZ = (((float)rand() - (float)rand() / RAND_MAX) * 10.f) + 5.0f;
+		m_ModelInfoList[i].positionX = (((float)rand() - (float)rand()) / RAND_MAX) * 10.f;
+		m_ModelInfoList[i].positionY = (((float)rand() - (float)rand()) / RAND_MAX) * 10.f;
+		m_ModelInfoList[i].positionZ = ((((float)rand() - (float)rand()) / RAND_MAX) * 10.f) + 5.0f;
 	}
 
 	return true;
