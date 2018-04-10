@@ -12,12 +12,13 @@ GraphicsClass::GraphicsClass()
 	m_Direct3D = nullptr;
 	m_Camera = nullptr;
 	m_Model = nullptr;
-
 	m_LightShader = nullptr;
 	m_TextureShader = nullptr;
 	m_Light = nullptr;
 	m_Bitmap = nullptr;
 	m_Text = nullptr;
+	m_ModelList = nullptr;
+	m_Frustum = nullptr;
 }
 
 GraphicsClass::GraphicsClass(const GraphicsClass& other)
@@ -83,7 +84,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	result = m_Model->Initialize(
 		m_Direct3D->GetDevice(), 
 		m_Direct3D->GetDeviceContext(),
-		"./data/model.txt",
+		"./data/sphere.txt",
 		"./data/stone01.tga"
 		);
 	if (!result) 
@@ -179,6 +180,28 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 	}
 
+	// create the model list object
+	m_ModelList = new ModelListClass;
+	if (!m_ModelList)
+	{
+		return false;
+	}
+
+	// initialize the model list object
+	result = m_ModelList->Initialize(25);	// num Models
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the model list object.", L"Error", MB_OK);
+		return false;
+	}
+
+	// create the frustum object
+	m_Frustum = new FrustumClass;
+	if (!m_Frustum)
+	{
+		return false;
+	}
+
 	if (VCARD_INFO)
 	{
 		char cardName[128];
@@ -208,6 +231,21 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 
 void GraphicsClass::Shutdown()
 {
+	// release the frustum object
+	if (m_Frustum)
+	{
+		delete m_Frustum;
+		m_Frustum = nullptr;
+	}
+
+	// release the model list object
+	if (m_ModelList)
+	{
+		m_ModelList->Shutdown();
+		delete m_ModelList;
+		m_ModelList = nullptr;
+	}
+
 	// release the text object
 	if (m_Text)
 	{
@@ -371,7 +409,10 @@ bool GraphicsClass::Frame(
 bool GraphicsClass::Render()
 {
 	XMMATRIX worldMatrix, viewMatrix, projectionMatrix, orthoMatrix;
-	bool result;
+	int modelCount, renderCount;
+	float positionX, positionY, positionZ, radius;
+	XMFLOAT4 color;
+	bool renderModel, result;
 
 	// clear the buffers to begin the scene
 	m_Direct3D->BeginScene(0.f, 0.f, 0.f, 1.f);
@@ -384,6 +425,46 @@ bool GraphicsClass::Render()
 	m_Camera->GetViewMatrix(viewMatrix);
 	m_Direct3D->GetProjectionMatrix(projectionMatrix);
 	m_Direct3D->GetOrthoMatrix(orthoMatrix);
+
+	// construct the frustum
+	m_Frustum->ConstructFrustum(
+		SCREEN_DEPTH,
+		projectionMatrix,
+		viewMatrix
+	);
+
+	// get the number of models that will be rendered
+	modelCount = m_ModelList->GetModelCount();
+
+	// initialize the count of models that have been rendered
+	renderCount = 0;
+
+	// go through all the models and render them only if they can be seen by the camera
+	for (int index = 0; index < modelCount; index++)
+	{
+		// get the position and color of the object model at this index
+		m_ModelList->GetData(
+			index,
+			positionX, positionY, positionZ,
+			color
+		);
+
+		// set the radius of the sphere to 1.0 since this is already known
+		radius = 1.f;
+
+		// check if the sphere model are in the view frustum
+		renderModel = m_Frustum->CheckSphere(
+			positionX, positionY, positionZ,
+			radius
+		);
+
+		// if it can be seen then render it, if not skip this model
+		if (renderModel)
+		{
+			// move the model to the location it should be rendered at
+			worldMatrix = XMMatrixTranslation(positionX, positionY, positionZ);
+		}
+	}
 
 	// TURN OFF the z buffer to begin all 2d rendering
 	m_Direct3D->TurnZBufferOff();

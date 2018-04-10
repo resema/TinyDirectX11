@@ -4,12 +4,14 @@
 #include "d3dclass.h"
 #include "cameraclass.h"
 #include "modelclass.h"
-
 #include "lightshaderclass.h"
 #include "textureshaderclass.h"
 #include "lightclass.h"
 #include "bitmapclass.h"
 #include "textclass.h"
+#include "modellistclass.h"
+#include "frustumclass.h"
+
 
 //
 // globals
@@ -43,12 +45,13 @@ private:
 	D3DClass* m_Direct3D;
 	CameraClass* m_Camera;
 	ModelClass* m_Model;
-
 	LightShaderClass* m_LightShader;
 	TextureShaderClass* m_TextureShader;
 	LightClass* m_Light;
 	BitmapClass* m_Bitmap;
 	TextClass* m_Text;
+	ModelListClass* m_ModelList;
+	FrustumClass* m_Frustum;
 
 private:
 	XMVECTOR position;
