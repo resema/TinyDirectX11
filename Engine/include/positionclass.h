@@ -13,6 +13,8 @@ public:
 	PositionClass(PositionClass&&) = default;
 	PositionClass& operator=(PositionClass&&) = default;
 
+	bool Frame();
+
 	void SetFrameTime(float);
 	void SetMousePosition(int, int);
 	void SetKeyboard(unsigned char*);
@@ -25,7 +27,6 @@ private:
 	void Update();
 	void Calculate();
 
-
 private:
 	float m_frameTime;
 	int m_mouseX, m_mouseY;
@@ -33,5 +34,8 @@ private:
 	float m_angleH, m_angleV;
 
 	XMVECTOR m_position, m_direction, m_right, m_up;
+
+private:
+	float speed = 0.01f;
 
 };

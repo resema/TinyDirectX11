@@ -1,13 +1,16 @@
 #include "graphicsclass.h"
 
 #include <string>
+
+// pre-processing directives
+#define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
 
 
 GraphicsClass::GraphicsClass()
-	: position(XMVectorZero()), 
-	  posX(0.f), posY(0.f), posZ(0.f), 
-	  angleH(0.f), angleV(0.f)
+	//: position(XMVectorZero()), 
+	//  posX(0.f), posY(0.f), posZ(0.f), 
+	//  angleH(0.f), angleV(0.f)
 {
 	m_Direct3D = nullptr;
 	m_Camera = nullptr;
@@ -188,7 +191,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// initialize the model list object
-	result = m_ModelList->Initialize(25);	// num Models
+	result = m_ModelList->Initialize(200);	// num Models
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the model list object.", L"Error", MB_OK);
@@ -311,35 +314,10 @@ void GraphicsClass::Shutdown()
 
 bool GraphicsClass::Frame(
 	int fps, int cpu, float frameTime,
-	int mouseX, int mouseY, unsigned char* key
+	XMFLOAT3 position, XMFLOAT3 direction, XMFLOAT3 up
 )
 {
 	bool result;
-
-	// update angles
-	angleH += mouseX;
-	if (angleH > 360.f) { angleH -= 360.f; }
-	else if (angleH < 0.f) { angleH += 360.f; }
-	angleV += mouseY;
-	if (angleV > 360.f) { angleV -= 360.f; }
-	else if(angleV < 0.f) { angleV += 360.f; }
-
-	// calculate direction
-	XMVECTOR direction = XMLoadFloat3(&XMFLOAT3(
-		cosf(angleV * 0.0174532925f) * sinf(angleH * 0.0174532925f),
-		-sinf(angleV * 0.0174532925f),
-		cosf(angleV * 0.0174532925f) * cosf(angleH * 0.0174532925f)
-	));
-
-	// calculate right vector
-	XMVECTOR right = XMLoadFloat3(&XMFLOAT3(
-		sinf(angleH * 0.0174532925f - 3.14f / 2.f),
-		0,
-		cosf(angleH * 0.0174532925f - 3.14f / 2.f)
-	));
-
-	// calculate the up vector
-	XMVECTOR up = XMVector3Cross(right, direction);
 
 	// set the frame per second
 	result = m_Text->SetFps(
@@ -362,46 +340,14 @@ bool GraphicsClass::Frame(
 	}
 
 
-	// update position
-	if (key[DIK_A] & 0x80)		// left
-	{
-		position += right * STEP;
-	}
-	if (key[DIK_S] & 0x80)		// back
-	{
-		position -= direction * STEP;
-	}
-	if (key[DIK_D] & 0x80)		// right
-	{
-		position -= right * STEP;
-	}
-	if (key[DIK_Q] & 0x80)		// down
-	{
-		position -= up * STEP;
-	}
-	if (key[DIK_W] & 0x80)		// forward
-	{
-		position += direction * STEP;
-	}
-	if (key[DIK_E] & 0x80)		// up
-	{
-		position += up * STEP;
-	}
-
 	// set the direciton of the camera
-	XMFLOAT3 tempDirection;
-	XMStoreFloat3(&tempDirection, direction);
-	m_Camera->SetDirection(tempDirection.x, tempDirection.y, tempDirection.z);
+	m_Camera->SetDirection(direction.x, direction.y, direction.z);
 
 	// set the up of the camera
-	XMFLOAT3 tempUp;
-	XMStoreFloat3(&tempUp, up);
-	m_Camera->SetUp(tempUp.x, tempUp.y, tempUp.z);
+	m_Camera->SetUp(up.x, up.y, up.z);
 
 	// set the position of the camera
-	XMFLOAT3 tempPosition;
-	XMStoreFloat3(&tempPosition, position);
-	m_Camera->SetPosition(tempPosition.x, tempPosition.y, tempPosition.z);
+	m_Camera->SetPosition(position.x, position.y, position.z);
 
 	return true;
 }

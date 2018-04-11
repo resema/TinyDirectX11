@@ -38,7 +38,7 @@ public:
 	bool Initialize(int, int, HWND);
 	void Shutdown();
 
-	bool Frame(int, int, float, int, int, unsigned char*);
+	bool Frame(int, int, float, XMFLOAT3, XMFLOAT3, XMFLOAT3);
 	bool Render();
 
 private:
@@ -52,12 +52,6 @@ private:
 	TextClass* m_Text;
 	ModelListClass* m_ModelList;
 	FrustumClass* m_Frustum;
-
-private:
-	XMVECTOR position;
-	float posX, posY, posZ;
-	float angleH;
-	float angleV;
 };
 
 #endif	// GRAPHICSCLASS_H

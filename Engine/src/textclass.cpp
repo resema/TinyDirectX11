@@ -1,5 +1,7 @@
 #include "textclass.h"
 
+// pre-processing directives
+#define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
 
 TextClass::TextClass()
@@ -561,6 +563,8 @@ bool TextClass::SetKeyPressed(unsigned char* key, ID3D11DeviceContext* deviceCon
 	{
 		return false;
 	}
+
+	return true;
 }
 
 bool TextClass::SetFps(int fps, ID3D11DeviceContext* deviceContext)

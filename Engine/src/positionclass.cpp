@@ -1,4 +1,7 @@
 #include "positionclass.h"
+
+// pre-processing directives
+#define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
 
 PositionClass::PositionClass()
@@ -8,6 +11,14 @@ PositionClass::PositionClass()
 	m_direction = XMVectorZero();
 	m_up = XMVectorZero();
 	m_right = XMVectorZero();
+}
+
+bool PositionClass::Frame()
+{
+	Update();
+	Calculate();
+
+	return true;
 }
 
 void PositionClass::SetFrameTime(float time)
@@ -80,27 +91,27 @@ void PositionClass::Update()
 	// update position
 	if (m_key[DIK_A] & 0x80)		// left
 	{
-		m_position += m_right * STEP;
+		m_position += m_right * m_frameTime * speed;
 	}
 	if (m_key[DIK_S] & 0x80)		// back
 	{
-		m_position -= m_direction * STEP;
+		m_position -= m_direction * m_frameTime * speed;
 	}
 	if (m_key[DIK_D] & 0x80)		// right
 	{
-		m_position -= m_right * STEP;
+		m_position -= m_right * m_frameTime * speed;
 	}
 	if (m_key[DIK_Q] & 0x80)		// down
 	{
-		m_position -= m_up * STEP;
+		m_position -= m_up * m_frameTime * speed;
 	}
 	if (m_key[DIK_W] & 0x80)		// forward
 	{
-		m_position += m_direction * STEP;
+		m_position += m_direction * m_frameTime * speed;
 	}
 	if (m_key[DIK_E] & 0x80)		// up
 	{
-		m_position += m_up * STEP;
+		m_position += m_up * m_frameTime * speed;
 	}
 
 }

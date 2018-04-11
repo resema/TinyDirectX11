@@ -1,7 +1,9 @@
 #include "systemclass.h"
 
 SystemClass::SystemClass()
-	: m_Input(0), m_Graphics(0), m_Fps(0), m_Cpu(0), m_Timer(0)
+	: m_Input(nullptr), m_Graphics(nullptr), 
+	  m_Fps(nullptr), m_Cpu(nullptr), 
+	  m_Timer(nullptr), m_Position(nullptr)
 {
 }
 
@@ -86,11 +88,25 @@ bool SystemClass::Initialize()
 		return false;
 	}
 
+	// create the position object
+	m_Position = new PositionClass;
+	if (!m_Position)
+	{
+		return false;
+	}
+
 	return true;
 }
 
 void SystemClass::Shutdown()
 {
+	// release the position object
+	if (m_Position)
+	{
+		delete m_Position;
+		m_Position = nullptr;
+	}
+
 	// release the timer object
 	if (m_Timer)
 	{
@@ -203,14 +219,30 @@ bool SystemClass::Frame()
 	// get the key pressed from the input object
 	m_Input->GetKeyPressed(&key);
 
+	// set the frame time for calculating the updated position
+	m_Position->SetFrameTime(m_Timer->GetTime());
+
+	// update viewing angle by passing the mouse position
+	m_Position->SetMousePosition(mouseX, mouseY);
+
+	// update position by passing the keyboard input
+	m_Position->SetKeyboard(key);
+
+	// do the position update
+	result = m_Position->Frame();
+	if (!result)
+	{
+		return false;
+	}
+
 	// do the frame processing for the graphics obj
 	result = m_Graphics->Frame(
 		m_Fps->GetFps(),
 		m_Cpu->GetCpuPercentage(),
 		m_Timer->GetTime(),
-		mouseX, 
-		mouseY, 
-		key
+		m_Position->GetPosition(), 
+		m_Position->GetDirection(), 
+		m_Position->GetUp()
 	);
 	if (!result)
 	{
