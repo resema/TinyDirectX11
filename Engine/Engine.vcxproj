@@ -163,6 +163,7 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\modelclass.cpp" />
     <ClCompile Include="src\modellistclass.cpp" />
+    <ClCompile Include="src\multitextureshaderclass.cpp" />
     <ClCompile Include="src\positionclass.cpp" />
     <ClCompile Include="src\systemclass.cpp" />
     <ClCompile Include="src\textclass.cpp" />
@@ -187,6 +188,7 @@
     <ClInclude Include="include\lightshaderclass.h" />
     <ClInclude Include="include\modelclass.h" />
     <ClInclude Include="include\modellistclass.h" />
+    <ClInclude Include="include\multitextureshaderclass.h" />
     <ClInclude Include="include\positionclass.h" />
     <ClInclude Include="include\systemclass.h" />
     <ClInclude Include="include\textclass.h" />
@@ -221,6 +223,16 @@
       <FileType>Document</FileType>
     </None>
     <None Include="shader\font.vs.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shader\multitexture.vs.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shader\multitexture.ps.hlsl">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>
