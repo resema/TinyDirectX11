@@ -646,7 +646,7 @@ bool TextClass::SetCpu(int cpu, ID3D11DeviceContext* deviceContext)
 		m_sentence2,
 		cpuString,
 		20, 40,
-		0.f, 0.f, 1.f,
+		1.f, 1.f, 0.f,
 		deviceContext
 	);
 	if (!result)

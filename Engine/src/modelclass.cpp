@@ -227,7 +227,7 @@ bool ModelClass::LoadTexture(ID3D11Device* device, ID3D11DeviceContext* deviceCo
 	}
 
 	// initialize the texture object
-	result = m_Texture->Initialize(device, deviceContext, filename);
+	result = m_Texture->InitializeDDS(device, deviceContext, filename);
 	if (!result)
 	{
 		return false;

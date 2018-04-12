@@ -88,7 +88,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		m_Direct3D->GetDevice(), 
 		m_Direct3D->GetDeviceContext(),
 		"./data/sphere.txt",
-		"./data/stone01.tga"
+		"./data/seafloor_conv.dds"
 		);
 	if (!result) 
 	{
@@ -191,7 +191,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// initialize the model list object
-	result = m_ModelList->Initialize(200);	// num Models
+	result = m_ModelList->Initialize(500);	// num Models
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the model list object.", L"Error", MB_OK);
