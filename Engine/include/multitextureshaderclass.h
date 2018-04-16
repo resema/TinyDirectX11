@@ -2,6 +2,7 @@
 #define MULTITEXTURESHADERCLASS_H
 
 #include "d3dclass.h"
+#include <d3dcompiler.h>
 #include <DirectXMath.h>
 using namespace DirectX;
 
