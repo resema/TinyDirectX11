@@ -16,7 +16,7 @@ GraphicsClass::GraphicsClass()
 	m_Camera = nullptr;
 	m_Model = nullptr;
 	m_LightShader = nullptr;
-	m_TextureShader = nullptr;
+	m_MultiTextureShader = nullptr;
 	m_Light = nullptr;
 	//m_Bitmap = nullptr;
 	m_Text = nullptr;
@@ -88,7 +88,8 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		m_Direct3D->GetDevice(), 
 		m_Direct3D->GetDeviceContext(),
 		"./data/sphere.txt",
-		"./data/seafloor_conv.dds"
+		L"./data/stone_conv.dds",
+		L"./data/dirt_conv.dds"
 		);
 	if (!result) 
 	{
@@ -111,18 +112,18 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 	}
 
-	// create the texture shader object
-	m_TextureShader = new TextureShaderClass;
-	if (!m_TextureShader)
+	// create the multi texture shader object
+	m_MultiTextureShader = new MultiTextureShaderClass;
+	if (!m_MultiTextureShader)
 	{
 		return false;
 	}
 
 	// initialize the light shader object
-	result = m_TextureShader->Initialize(m_Direct3D->GetDevice(), hwnd);
+	result = m_MultiTextureShader->Initialize(m_Direct3D->GetDevice(), hwnd);
 	if (!result)
 	{
-		MessageBox(hwnd, L"Could not initialize the texture shader object.", L"Error", MB_OK);
+		MessageBox(hwnd, L"Could not initialize the multitexture shader object.", L"Error", MB_OK);
 		return false;
 	}
 
@@ -281,11 +282,11 @@ void GraphicsClass::Shutdown()
 	}
 
 	// release the texture shader object
-	if (m_TextureShader)
+	if (m_MultiTextureShader)
 	{
-		m_TextureShader->Shutdown();
-		delete m_TextureShader;
-		m_TextureShader = nullptr;
+		m_MultiTextureShader->Shutdown();
+		delete m_MultiTextureShader;
+		m_MultiTextureShader = nullptr;
 	}
 
 	// release the model object
