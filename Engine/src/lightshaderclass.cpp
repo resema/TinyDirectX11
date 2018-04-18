@@ -446,9 +446,9 @@ bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 
 	// set shader texture resoure in pixel shader
 	deviceContext->PSSetShaderResources(
-		0,
-		1,
-		textureArray
+		0,				// start slot
+		2,				// number of textures in the array
+		textureArray	// texture resource array [2]
 		);
 
 	// lock the camera constant buffer so it can be written to
