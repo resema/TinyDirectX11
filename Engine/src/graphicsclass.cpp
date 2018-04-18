@@ -16,7 +16,6 @@ GraphicsClass::GraphicsClass()
 	m_Camera = nullptr;
 	m_Model = nullptr;
 	m_LightShader = nullptr;
-	m_MultiTextureShader = nullptr;
 	m_Light = nullptr;
 	//m_Bitmap = nullptr;
 	m_Text = nullptr;
@@ -419,7 +418,7 @@ bool GraphicsClass::Render()
 				m_Direct3D->GetDeviceContext(),
 				m_Model->GetIndexCount(),
 				worldMatrix, viewMatrix, projectionMatrix,
-				m_Model->GetTexture(),
+				m_Model->GetTextureArray(),
 				m_Light->GetDirection(),
 				m_Light->GetAmbientColor(),
 				XMLoadFloat4(&color),			// customized color

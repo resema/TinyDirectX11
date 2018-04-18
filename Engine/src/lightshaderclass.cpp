@@ -24,8 +24,12 @@ bool LightShaderClass::Initialize(ID3D11Device* device, HWND hwnd)
 	bool result;
 
 	// initialize the vertex and pixel shaders
-	result = InitializeShader(device, hwnd, 
-		L"./shader/light.vs.hlsl", L"./shader/light.ps.hlsl");
+	result = InitializeShader(
+		device, 
+		hwnd, 
+		L"./shader/light.vs.hlsl", 
+		L"./shader/light.ps.hlsl"
+	);
 	if (!result)
 	{
 		return false;
@@ -34,7 +38,8 @@ bool LightShaderClass::Initialize(ID3D11Device* device, HWND hwnd)
 	return true;
 }
 
-void LightShaderClass::Shutdown() {
+void LightShaderClass::Shutdown() 
+{
 	// shutdown the vertex and pixel shaders as well as the related objects
 	ShutdownShader();
 
@@ -43,7 +48,7 @@ void LightShaderClass::Shutdown() {
 
 bool LightShaderClass::Render(ID3D11DeviceContext* deviceContext, int indexCount,
 	XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix,
-	ID3D11ShaderResourceView* texture, 
+	ID3D11ShaderResourceView** textureArray, 
 	XMFLOAT3 lightDirection, XMVECTOR ambientColor, XMVECTOR diffuseColor,
 	XMFLOAT3 cameraPosition, XMVECTOR specularColor, float specularPower)
 {
@@ -53,7 +58,7 @@ bool LightShaderClass::Render(ID3D11DeviceContext* deviceContext, int indexCount
 	result = SetShaderParameters(
 		deviceContext,
 		worldMatrix, viewMatrix, projectionMatrix,
-		texture,
+		textureArray,
 		lightDirection, ambientColor, diffuseColor,
 		cameraPosition, specularColor, specularPower
 		);
@@ -356,7 +361,7 @@ void LightShaderClass::ShutdownShader()
 void LightShaderClass::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, WCHAR* shaderFilename)
 {
 	char* compileErrors;
-	unsigned long bufferSize;
+	size_t bufferSize;
 	std::ofstream fout;
 
 	// get ptr to error message text buffer
@@ -369,7 +374,7 @@ void LightShaderClass::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND h
 	fout.open("shader-error.txt");
 
 	// write out the error message
-	for (unsigned long i = 0; i < bufferSize; i++)
+	for (size_t i = 0; i < bufferSize; i++)
 	{
 		fout << compileErrors[i];
 	}
@@ -386,7 +391,7 @@ void LightShaderClass::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND h
 
 bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 	XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix,
-	ID3D11ShaderResourceView* texture, 
+	ID3D11ShaderResourceView** textureArray, 
 	XMFLOAT3 lightDirection, XMVECTOR ambientColor, XMVECTOR diffuseColor,
 	XMFLOAT3 cameraPosition, XMVECTOR specularColor, float specularPower)
 {
@@ -443,7 +448,7 @@ bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 	deviceContext->PSSetShaderResources(
 		0,
 		1,
-		&texture
+		textureArray
 		);
 
 	// lock the camera constant buffer so it can be written to

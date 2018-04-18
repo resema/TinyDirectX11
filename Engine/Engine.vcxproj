@@ -167,6 +167,7 @@
     <ClCompile Include="src\positionclass.cpp" />
     <ClCompile Include="src\systemclass.cpp" />
     <ClCompile Include="src\textclass.cpp" />
+    <ClCompile Include="src\texturearrayclass.cpp" />
     <ClCompile Include="src\textureclass.cpp" />
     <ClCompile Include="src\textureshaderclass.cpp" />
     <ClCompile Include="src\timerclass.cpp" />
@@ -192,6 +193,7 @@
     <ClInclude Include="include\positionclass.h" />
     <ClInclude Include="include\systemclass.h" />
     <ClInclude Include="include\textclass.h" />
+    <ClInclude Include="include\texturearrayclass.h" />
     <ClInclude Include="include\textureclass.h" />
     <ClInclude Include="include\textureshaderclass.h" />
     <ClInclude Include="include\timerclass.h" />

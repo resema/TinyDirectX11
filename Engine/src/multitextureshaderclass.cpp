@@ -213,7 +213,7 @@ bool MultiTextureShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd,
 		return false;
 	}
 
-	// crete a texture sampler state description
+	// create a texture sampler state description
 	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
 	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
 	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
@@ -371,7 +371,7 @@ bool MultiTextureShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceCon
 	deviceContext->PSSetShaderResources(
 		0,				// start slot
 		2,				// number of textures in the array
-		textureArray	// texture resource
+		textureArray	// texture resource array [2]
 	);
 
 	return true;

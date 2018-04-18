@@ -4,7 +4,7 @@ SamplerState SampleType;
 struct PixelInputType
 {
 	float4 position : SV_POSITION;
-	flaot2 tex : TEXCOORD0;
+	float2 tex : TEXCOORD0;
 };
 
 float4 MultiTexturePixelShader(PixelInputType input) : SV_TARGET
@@ -14,7 +14,7 @@ float4 MultiTexturePixelShader(PixelInputType input) : SV_TARGET
 	float4 blendColor;
 
 	// get the pixel color from the first texture
-	color1 = shaderTextures[0].Sampe(SampleType, input.tex);
+	color1 = shaderTextures[0].Sample(SampleType, input.tex);
 
 	// get the pixel color from the second texture
 	color2 = shaderTextures[1].Sample(SampleType, input.text);

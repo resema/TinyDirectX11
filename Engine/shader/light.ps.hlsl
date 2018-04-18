@@ -1,6 +1,6 @@
 //
 // globals
-Texture2D shaderTexture;
+Texture2D shaderTexture[2];
 SamplerState SampleType;
 
 cbuffer LightBuffer
@@ -26,7 +26,9 @@ struct PixelInputType
 // pixel shader
 float4 LightPixelShader(PixelInputType input) : SV_TARGET
 {
-	float4 textureColor;
+	float4 textureColor1;
+	float4 textureColor2;
+	float4 blendTexColor;
 	float3 lightDir;
 	float lightIntensity;
 	float4 color;
@@ -35,7 +37,10 @@ float4 LightPixelShader(PixelInputType input) : SV_TARGET
 
 	// sample the pixel color from the texture using the sampler 
 	//  at this texture coord location
-	textureColor = shaderTexture.Sample(SampleType, input.tex);
+	textureColor1 = shaderTexture[0].Sample(SampleType, input.tex);
+	textureColor2 = shaderTexture[1].Sample(SampleType, input.tex);
+	blendTexColor = textureColor1 * textureColor2 * 2.0;
+	blendTexColor = saturate(blendTexColor);
 
 	// set the default output color to the ambient light value for all pixels
 	color = ambientColor;
@@ -68,7 +73,7 @@ float4 LightPixelShader(PixelInputType input) : SV_TARGET
 	}
 
 	// Multiply the texture pixel and the input color to get the textured result.
-	color = color * textureColor;
+	color = color * blendTexColor;
 
 	// Add the specular component last to the output color.
 	color = saturate(color + specular);

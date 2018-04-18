@@ -5,7 +5,6 @@
 #include "cameraclass.h"
 #include "modelclass.h"
 #include "lightshaderclass.h"
-#include "multitextureshaderclass.h"
 #include "lightclass.h"
 #include "bitmapclass.h"
 #include "textclass.h"
@@ -46,7 +45,6 @@ private:
 	CameraClass* m_Camera;
 	ModelClass* m_Model;
 	LightShaderClass* m_LightShader;
-	MultiTextureShaderClass* m_MultiTextureShader;
 	LightClass* m_Light;
 	BitmapClass* m_Bitmap;
 	TextClass* m_Text;
