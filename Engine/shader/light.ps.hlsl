@@ -1,6 +1,6 @@
 //
 // globals
-Texture2D shaderTexture[2];
+Texture2D shaderTexture[3];		// two textures and one alpha map texture
 SamplerState SampleType;
 
 cbuffer LightBuffer
@@ -28,6 +28,7 @@ float4 LightPixelShader(PixelInputType input) : SV_TARGET
 {
 	float4 textureColor1;
 	float4 textureColor2;
+	float4 alphaValue;
 	float4 blendTexColor;
 	float3 lightDir;
 	float lightIntensity;
@@ -39,7 +40,10 @@ float4 LightPixelShader(PixelInputType input) : SV_TARGET
 	//  at this texture coord location
 	textureColor1 = shaderTexture[0].Sample(SampleType, input.tex);
 	textureColor2 = shaderTexture[1].Sample(SampleType, input.tex);
-	blendTexColor = textureColor1 * textureColor2 * 2.0;
+	alphaValue	  = shaderTexture[2].Sample(SampleType, input.tex);
+
+	// combine the two textures based on the alpha value
+	blendTexColor = (alphaValue * textureColor1) + ((1.0 - alphaValue) * textureColor2);
 	blendTexColor = saturate(blendTexColor);
 
 	// set the default output color to the ambient light value for all pixels

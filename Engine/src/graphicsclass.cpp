@@ -88,7 +88,8 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		m_Direct3D->GetDeviceContext(),
 		"./data/sphere.txt",
 		L"./data/stone01_conv.dds",
-		L"./data/light01_conv.dds"
+		L"./data/dirt01_conv.dds",
+		L"./data/alpha01_conv.dds"
 		);
 	if (!result) 
 	{
@@ -121,8 +122,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	// initialize the light object
 	m_Light->SetAmbientColor(0.15f, 0.15f, 0.15f, 1.f);
 	m_Light->SetDiffuseColor(1.f, 1.f, 1.f, 1.f);
-	m_Light->SetDirection(1.f, 0.f, 0.f);
-	m_Light->SetDirection(1.f, 0.f, 1.f);
+	m_Light->SetDirection(0.f, 0.f, -1.f);
 	m_Light->SetSpecularColor(1.f, 1.f, 1.f, 1.f);
 	m_Light->SetSpecularPower(32.f);
 
