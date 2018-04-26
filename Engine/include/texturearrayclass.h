@@ -14,13 +14,13 @@ public:
 	TextureArrayClass(TextureArrayClass&&) = default;
 	TextureArrayClass& operator=(TextureArrayClass&&) = default;
 
-	bool Initialize(ID3D11Device*, WCHAR*, WCHAR*, WCHAR*);
+	bool Initialize(ID3D11Device*, WCHAR*, WCHAR*, WCHAR*, WCHAR*);
 	void Shutdown();
 
 	ID3D11ShaderResourceView** GetTextureArray();
 
 private:
-	ID3D11ShaderResourceView* m_textures[3];
+	ID3D11ShaderResourceView* m_textures[4];
 };
 
 #endif	// TEXTUREARRAYCLASS_H
