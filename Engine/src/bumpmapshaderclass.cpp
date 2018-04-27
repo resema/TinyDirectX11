@@ -463,7 +463,7 @@ bool BumpMapShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 	// set shader texture resoure in pixel shader
 	deviceContext->PSSetShaderResources(
 		0,				// start slot
-		5,				// number of textures in the array (two textures & one alpha map)
+		4,				// number of textures in the array (two textures & one alpha map & one bumpmap)
 		textureArray	// texture resource array [2]
 		);
 

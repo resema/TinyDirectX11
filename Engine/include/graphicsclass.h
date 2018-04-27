@@ -4,7 +4,7 @@
 #include "d3dclass.h"
 #include "cameraclass.h"
 #include "modelclass.h"
-#include "lightshaderclass.h"
+#include "bumpmapshaderclass.h"
 #include "lightclass.h"
 #include "bitmapclass.h"
 #include "textclass.h"
@@ -44,7 +44,7 @@ private:
 	D3DClass* m_Direct3D;
 	CameraClass* m_Camera;
 	ModelClass* m_Model;
-	LightShaderClass* m_LightShader;
+	BumpMapShaderClass* m_BumpMapShader;
 	LightClass* m_Light;
 	BitmapClass* m_Bitmap;
 	TextClass* m_Text;

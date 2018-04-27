@@ -148,6 +148,7 @@
   <ItemGroup>
     <ClCompile Include="..\DirectXTex\DDSTextureLoader\DDSTextureLoader.cpp" />
     <ClCompile Include="src\bitmapclass.cpp" />
+    <ClCompile Include="src\bumpmapshaderclass.cpp" />
     <ClCompile Include="src\cameraclass.cpp" />
     <ClCompile Include="src\colorshaderclass.cpp" />
     <ClCompile Include="src\cpuclass.cpp" />
@@ -175,6 +176,7 @@
   <ItemGroup>
     <ClInclude Include="..\DirectXTex\DDSTextureLoader\DDSTextureLoader.h" />
     <ClInclude Include="include\bitmapclass.h" />
+    <ClInclude Include="include\bumpmapshaderclass.h" />
     <ClInclude Include="include\cameraclass.h" />
     <ClInclude Include="include\colorshaderclass.h" />
     <ClInclude Include="include\cpuclass.h" />
@@ -235,6 +237,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="shader\multitexture.ps.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shader\bumpmap.ps.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="shader\bumpmap.vs.hlsl">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>

@@ -444,12 +444,12 @@ void ModelClass::CalculateTangentBinormal(TempVertexType vertex1, TempVertexType
 
 	// calculate the cross product and multiply by the coeff to get the tangent/binormal
 	tangent.x = (tvVector[1] * vector1[0] - tvVector[0] * vector2[0]) * den;
-	tangent.x = (tvVector[1] * vector1[1] - tvVector[0] * vector2[1]) * den;
-	tangent.x = (tvVector[1] * vector1[2] - tvVector[0] * vector2[2]) * den;
+	tangent.y = (tvVector[1] * vector1[1] - tvVector[0] * vector2[1]) * den;
+	tangent.z = (tvVector[1] * vector1[2] - tvVector[0] * vector2[2]) * den;
 
 	binormal.x = (tuVector[0] * vector2[0] - tuVector[1] * vector1[0]) * den;
-	binormal.x = (tuVector[0] * vector2[1] - tuVector[1] * vector1[1]) * den;
-	binormal.x = (tuVector[0] * vector2[2] - tuVector[1] * vector1[2]) * den;
+	binormal.y = (tuVector[0] * vector2[1] - tuVector[1] * vector1[1]) * den;
+	binormal.z = (tuVector[0] * vector2[2] - tuVector[1] * vector1[2]) * den;
 
 	// calculate the length of this normal
 	length = sqrt((tangent.x * tangent.x) + (tangent.y * tangent.y) + (tangent.z * tangent.z));
@@ -484,7 +484,7 @@ void ModelClass::CalculateNormal(VectorType tangent, VectorType binormal, Vector
 
 	// normalize the normal
 	normal.x = normal.x / length;
-	normal.y = normal.y / lenght;
+	normal.y = normal.y / length;
 	normal.z = normal.z / length;
 
 	return;

@@ -47,7 +47,7 @@ float4 BumpMapPixelShader(PixelInputType input) : SV_TARGET
 	alphaValue	  = shaderTexture[2].Sample(SampleType, input.tex);
 
 	// sample the pixel in the bumpmap
-	bumpMap = shaderTextures[3].Sample(SampleType, input.tex);
+	bumpMap = shaderTexture[3].Sample(SampleType, input.tex);
 	// expand the range of the normal value from (0,+1) to (-1,+1)
 	bumpMap = (bumpMap * 2.f) - 1.f;
 	// calculate the normal fromthe data in the bump map
@@ -82,7 +82,7 @@ float4 BumpMapPixelShader(PixelInputType input) : SV_TARGET
 		// calculate the reflection vector based on the light intensity, normal vector and light direction
 		//  walk twice the lightIntensity in the direction of input.normal and subtract
 		//  the light direction l to get the reflection vector r
-		reflection = normalize(2 * lightIntensity * input.normal - lightDir);
+		reflection = normalize(2 * lightIntensity * bumpNormal - lightDir);
 
 		// determine the amount of specular light based on the 
 		//  reflection vector, viewing direction and specular power

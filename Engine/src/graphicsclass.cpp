@@ -15,7 +15,7 @@ GraphicsClass::GraphicsClass()
 	m_Direct3D = nullptr;
 	m_Camera = nullptr;
 	m_Model = nullptr;
-	m_LightShader = nullptr;
+	m_BumpMapShader = nullptr;
 	m_Light = nullptr;
 	//m_Bitmap = nullptr;
 	m_Text = nullptr;
@@ -89,7 +89,8 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		"./data/sphere.txt",
 		L"./data/stone01_conv.dds",
 		L"./data/dirt01_conv.dds",
-		L"./data/alpha01_conv.dds"
+		L"./data/alpha01_conv.dds",
+		L"./data/bump01_conv.dds"
 		);
 	if (!result) 
 	{
@@ -98,14 +99,14 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 	
 	// create the light shader object
-	m_LightShader = new LightShaderClass;
-	if (!m_LightShader)
+	m_BumpMapShader = new BumpMapShaderClass;
+	if (!m_BumpMapShader)
 	{
 		return false;
 	}
 
 	// initialize the light shader object
-	result = m_LightShader->Initialize(m_Direct3D->GetDevice(), hwnd);
+	result = m_BumpMapShader->Initialize(m_Direct3D->GetDevice(), hwnd);
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the light shader object.", L"Error", MB_OK);
@@ -122,7 +123,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	// initialize the light object
 	m_Light->SetAmbientColor(0.15f, 0.15f, 0.15f, 1.f);
 	m_Light->SetDiffuseColor(1.f, 1.f, 1.f, 1.f);
-	m_Light->SetDirection(0.f, 0.f, -1.f);
+	m_Light->SetDirection(0.f, 0.f, 1.f);
 	m_Light->SetSpecularColor(1.f, 1.f, 1.f, 1.f);
 	m_Light->SetSpecularPower(32.f);
 
@@ -258,11 +259,11 @@ void GraphicsClass::Shutdown()
 	}
 
 	// release the light shader object
-	if (m_LightShader)
+	if (m_BumpMapShader)
 	{
-		m_LightShader->Shutdown();
-		delete m_LightShader;
-		m_LightShader = nullptr;
+		m_BumpMapShader->Shutdown();
+		delete m_BumpMapShader;
+		m_BumpMapShader = nullptr;
 	}
 
 	// release the model object
@@ -390,8 +391,8 @@ bool GraphicsClass::Render()
 			// put the model vertex and index buffers on the graphics pipeline
 			m_Model->Render(m_Direct3D->GetDeviceContext());
 
-			// render the model using the light shader
-			m_LightShader->Render(
+			// render the model using the bumpmap shader
+			m_BumpMapShader->Render(
 				m_Direct3D->GetDeviceContext(),
 				m_Model->GetIndexCount(),
 				worldMatrix, viewMatrix, projectionMatrix,
