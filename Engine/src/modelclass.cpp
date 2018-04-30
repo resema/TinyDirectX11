@@ -18,7 +18,7 @@ ModelClass::~ModelClass()
 
 bool ModelClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, 
 	char* modelFilename, WCHAR* textureFilename1, WCHAR* textureFilename2, 
-	WCHAR* textureFilename3, WCHAR* textureFilename4)
+	WCHAR* textureFilename3, WCHAR* textureFilename4, WCHAR* textureFilename5)
 {
 	bool result;
 
@@ -45,7 +45,8 @@ bool ModelClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceCon
 		textureFilename1, 
 		textureFilename2, 
 		textureFilename3, 
-		textureFilename4
+		textureFilename4,
+		textureFilename5
 	);
 	if (!result)
 	{
@@ -228,8 +229,8 @@ void ModelClass::RenderBuffers(ID3D11DeviceContext* deviceContext)
 	return;
 }
 
-bool ModelClass::LoadTextures(ID3D11Device* device, 
-	WCHAR* filename1, WCHAR* filename2, WCHAR* filename3, WCHAR* filename4)
+bool ModelClass::LoadTextures(ID3D11Device* device, WCHAR* filename1, WCHAR* filename2, 
+	WCHAR* filename3, WCHAR* filename4, WCHAR* filename5)
 {
 	bool result;
 
@@ -241,7 +242,7 @@ bool ModelClass::LoadTextures(ID3D11Device* device,
 	}
 
 	// initialize the texture array object
-	result = m_TextureArray->Initialize(device, filename1, filename2, filename3, filename4);
+	result = m_TextureArray->Initialize(device, filename1, filename2, filename3, filename4, filename5);
 	if (!result)
 	{
 		return false;

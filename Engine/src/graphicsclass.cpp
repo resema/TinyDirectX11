@@ -90,7 +90,8 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		L"./data/stone01_conv.dds",
 		L"./data/dirt01_conv.dds",
 		L"./data/alpha01_conv.dds",
-		L"./data/bump01_conv.dds"
+		L"./data/bump01_conv.dds",
+		L"./data/spec02_conv.dds"
 		);
 	if (!result) 
 	{

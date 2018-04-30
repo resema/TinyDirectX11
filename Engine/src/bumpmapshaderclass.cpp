@@ -28,7 +28,7 @@ bool BumpMapShaderClass::Initialize(ID3D11Device* device, HWND hwnd)
 		device, 
 		hwnd, 
 		L"./shader/bumpmap.vs.hlsl", 
-		L"./shader/bumpmap.ps.hlsl"
+		L"./shader/specmap.ps.hlsl"
 	);
 	if (!result)
 	{
@@ -463,8 +463,8 @@ bool BumpMapShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 	// set shader texture resoure in pixel shader
 	deviceContext->PSSetShaderResources(
 		0,				// start slot
-		4,				// number of textures in the array (two textures & one alpha map & one bumpmap)
-		textureArray	// texture resource array [2]
+		5,				// number of textures in the array (two textures & one alpha map & one bumpmap) & one specmap
+		textureArray	// texture resource array [5]
 		);
 
 	// lock the camera constant buffer so it can be written to

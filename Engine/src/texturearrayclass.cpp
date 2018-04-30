@@ -9,7 +9,8 @@ TextureArrayClass::TextureArrayClass()
 	m_textures[2] = nullptr;
 }
 
-bool TextureArrayClass::Initialize(ID3D11Device* device, WCHAR* filename1, WCHAR* filename2, WCHAR* filename3, WCHAR* filename4)
+bool TextureArrayClass::Initialize(ID3D11Device* device, 
+	WCHAR* filename1, WCHAR* filename2, WCHAR* filename3, WCHAR* filename4, WCHAR* filename5)
 {
 	HRESULT result;
 
@@ -56,6 +57,18 @@ bool TextureArrayClass::Initialize(ID3D11Device* device, WCHAR* filename1, WCHAR
 		filename4,
 		NULL,
 		&m_textures[3]
+	);
+	if (FAILED(result))
+	{
+		return false;
+	}
+
+	// load the fifth texture in
+	result = DirectX::CreateDDSTextureFromFile(
+		device,
+		filename5,
+		NULL,
+		&m_textures[4]
 	);
 	if (FAILED(result))
 	{
